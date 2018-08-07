@@ -1,0 +1,143 @@
+%% Submissions for peer-review must enable line-numbering 
+%% using the lineno option in the \documentclass command.
+%%
+%% Preprints and camera-ready submissions do not need 
+%% line numbers, and should have this option removed.
+%%
+%% Please note that the line numbering option requires
+%% version 1.1 or newer of the wlpeerj.cls file, and
+%% the corresponding author info requires v1.2
+
+\documentclass[fleqn,10pt,lineno]{wlpeerj} % for journal submissions
+% \documentclass[fleqn,10pt]{wlpeerj} % for preprint submissions
+
+\usepackage{minted}
+
+% for track changes. See https://tex.stackexchange.com/questions/65453/track-changes-in-latex
+\usepackage{changes}
+\definechangesauthor[name={Egon}, color=blue]{ew}
+%\setremarkmarkup{(#2)}
+
+\title{Citation.js: A Decentralised, Modular Citation Manager in JavaScript}
+
+\author[1]{Lars Willighagen}
+\affil[1]{Eindhoven, The Netherlands}
+\corrauthor[1]{Lars Willighagen}{lars.willighagen@gmail.com}
+
+% \keywords{Keyword1, Keyword2, Keyword3}
+
+\begin{abstract}
+
+\end{abstract}
+
+\begin{document}
+
+\flushbottom
+\maketitle
+\thispagestyle{empty}
+
+\section*{Introduction}
+
+With the goal of scientific publishing being the distribution of knowledge, it is important that this knowledge is actually distributed properly, which includes the accessibility and findability of these publications. One way findability has improved in the last few decades, is the transition from text-based citations to the use of Persistent IDentifiers (PIDs), Digital Object Identifiers (DOIs) being the most common. These PIDs are then linked to central stores of machine-readable bibliographic information.
+
+However, there are lots of different stores, most with their own formats. On top of that, most citation managers, like Mendeley, EndNote, Zotero and even Office Word, have internal formats as well, sometimes including legacy versions. Because of that, citation managers have to maintain parsers for most of those formats. Citation.js brings this functionality to most platforms by using JavaScript, allowing developers to have full control of the machine the software is running on.
+
+To still ensure performance on the client machine, or the web page if the program is running in the browser, Citation.js is fully modularised. Formats are bundled in thematic plugins, which can be installed separately. This can be seen as a regression with respect to for example Zotero; the plugins \textit{have} to be installed separately. However, it is a necessary choice, especially if Citation.js is to be used on anything other then dedicated sites.
+
+\section*{Methods}
+
+\subsection*{Software Development}
+
+The software was developed using modern standards. This included:
+\begin{itemize}
+\item version control with Git
+\item semantic versioning for releases
+\item open source archives on GitHub and Zenodo
+\item integration testing on a CI
+\item automated builds
+\item Standard code linting
+\item checking \texttt{RegExp}'es for ReDOS vulnerabilities with \texttt{vuln-regex-detector} \citep{davis_impact_nodate}
+\item API documentation with JSDoc and guides
+\end{itemize}
+The development process took place with node and npm.
+
+\section*{Results}
+
+\subsection*{Implementation}
+
+Citation.js employs a number of ways to achieve a balance between function and ease of use. The program consists of three major parts: the citation manager itself, code handling input parsing and code handling output formatting. A planned fourth part, handling the use of crosswalks to switch between schemes in the same linked-data format will be discussed later. The citation manager itself is quite simple; it mainly acts as a wrapper around the parsing and formatting parts, which will be explained further. The other two parts, and the fourth part when it's implemented, behave in a modularised way, with a common plugin system.
+
+\subsubsection*{Input Parsing}
+
+\subsubsection*{Plugin System}
+
+Apart from being able to add input and output formats and schemes on their own, it is also possible to add them in a thematically linked plugin. For example, a BibTeX plugin might consist of a parser for \texttt{.bib} files, a parser for the resulting BibTeX-schemed JSON, and a output formatter to create BibTeX from other sources as well. This plugin could then be combined with, for example, a Bib.TXT plugin, producing a JavaScript package or module, which could be published in package managers like NPM. Code for this plugin would like Fig. \ref{code:plugin}.
+
+For configuring plugins there is also a \texttt{config} option. As an example a \texttt{labelForm} option is added, which could control the way the BibTeX output formatter generates labels. Users of this plugin can then retrieve and modify this configuration. It is also possible to offer internal functions this way, for more fine-grained control.
+
+\begin{figure}[ht]
+\centering
+\begin{minted}[linenos]{javascript}
+import Cite from 'citation-js'
+
+Cite.plugins.add('bibtex', {
+  input: {
+    '@bibtex/text': {
+      parseType: { ... },
+      parse (text) { ... }
+    },
+    '@bibtex/object': {
+      parseType: { ... },
+      parse (text) { ... }
+    }
+  },
+
+  output: {
+    bibtex (data, options) {
+      ...
+    }
+  },
+
+  config: {
+    labelForm: ['author', 'title', 'issued']
+  }
+})
+
+let bibtexConfig = Cite.plugins.config.get('bibtex')
+bibtexConfig.labelForm = ['author', 'issued', 'year-suffix']
+\end{minted}
+\caption{\textbf{Possible structure of a plugin for BibTeX.}
+In this example package, line 1 loads Citation.js and lines 2-24 adds the plugin. This plugin consists of two input formats (4-13), one output format (15-19) and configuration options (21-23). Some code is omitted for the sake of clarity, and is replaced with ellipsis (\texttt{...}). Lines 26-27 show how this configuration would be used.
+}
+\label{code:plugin}
+\end{figure}
+
+\subsection*{Distribution}
+
+\subsubsection*{Browser use}
+
+\added[id=ew,remark={Even as single author, scholarly articles tend to use 'we'...}]{We have developed...}
+
+\subsection*{\added[id=ew]{Offline use with NodeJS}}
+
+\subsection*{\added[id=ew]{Online use in HTML}}
+
+\subsubsection*{\added[id=ew]{Inline references}}
+
+\subsubsection*{\added[id=ew]{Reference list from Wikidata}}
+
+\section*{Discussion}
+
+\lipsum[10] % Dummy text
+
+\subsection*{Use of Linked Data and Standardized Crosswalks}
+
+\lipsum[11] % Dummy text
+
+\section*{Acknowledgments}
+
+So long and thanks for all the fish.
+
+\bibliography{citations}
+
+\end{document}
