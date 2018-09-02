@@ -14,6 +14,7 @@
 \usepackage{hyperref}
 \usepackage{minted}
 \usepackage{subcaption}
+\usepackage{multirow}
 
 % for track changes. See https://tex.stackexchange.com/questions/65453/track-changes-in-latex
 \usepackage{changes}
@@ -224,11 +225,18 @@ The Citation.js npm package can also be used as a library to create integrations
 
 \subsection*{Performance}
 
+The performance of the Citation.js package has been analyzed on a number of different platforms. A common theme is that in browsers, compiling the script and importing the library takes about 120 ms, compiling itself being a little less than half of that. Node.js on the other hand takes about 1 s to initialize, both when the source, consisting of multiple files is imported and when a bundle is imported. Since both Node.js and Chrome run on the V8 engine it is difficult to tell why this is happening. On subsequent runs in Chrome, compiling times reduce to about 8 ms.
+
+The results were obtained with the default settings for each of the platforms. In Chrome, this was achieved by using guest mode, while Node and FireFox were not configured to begin with.
+
+As shown in Fig. \ref{fig:perf}, time taken to import the library mainly consists of importing \texttt{@babel/polyfill}. After that the actual code is imported in two parts. In the first part, loading input-related code and the Cite interface, the main culprit is \texttt{addTypeParser}, with 0.35 ms per call on average. In the second part, loading output-related code, importing \texttt{citeproc-js} takes the longest with a single call of 8.50 ms.
+
 \begin{figure}[ht]
 \begin{subfigure}{\textwidth}
   \centering
   \includegraphics[width=\linewidth]{figures/perf_chrome.png}
-  \caption{\textbf{Chrome 68.} Not shown is the compiling time (49.7 ms), which happened right before the events shown in the graph.}
+  \caption{\textbf{Chrome 68.}
+  Not shown is the compiling time (49.9 ms), which happened right before the events shown in the graph.}
   \label{fig:perf-chrome}
 \end{subfigure}
 \begin{subfigure}{\textwidth}
@@ -237,10 +245,29 @@ The Citation.js npm package can also be used as a library to create integrations
   \caption{\textbf{Firefox 61}}
   \label{fig:perf-ff}
 \end{subfigure}
-\caption{\textbf{Performance results on different platforms.}
-Actual timings may very depending on the device, OS and network status. Both graphs show three parts, one loading polyfills from \texttt{@babel/polyfill} taking up half the loading time, followed by two parts mainly loading input parsing and output formatting code respectively. Firefox takes about 100 ms overall, while Chrome takes 120 ms. Also note that Chrome and Firefox both take about 50 ms in compiling, but Chrome does this upfront, while Firefox uses Just-In-Time compilation (JIT), compiling pieces of code that are used a lot.}
+\caption{\textbf{Initialization performance results on different platforms.}
+Actual timings may very depending on the device, OS and network status. Both graphs show three parts, one loading polyfills from \texttt{@babel/polyfill} taking up half the loading time, followed by two parts mainly loading input parsing and output formatting code respectively. Firefox takes about 100 ms overall, while Chrome takes 120 ms. Also note that Chrome and Firefox both take about 50 ms in compiling. However, Chrome does this upfront while Firefox uses Just-In-Time compilation (JIT), compiling pieces of code when they are used a lot.}
 \label{fig:perf}
 \end{figure}
+
+While code execution is one part, one should also look into the file size. This is especially important in the browser, which has to fetch the library when loading the page.
+
+\begin{table}[ht]
+\begin{tabular}{|l|l|r|r|}
+\hline
+\multicolumn{2}{|c|}{\textbf{Part}}            & \multicolumn{1}{c|}{\textbf{Size}} & \multicolumn{1}{l|}{\textbf{Loading time}} \\ \hline
+\multirow{5}{*}{Dependency} & @babel/polyfill  & 226.7 kb                           & 30 ms                                      \\ \cline{2-4} 
+                            & citeproc-js      & 680.7 kb                           & 2 ms                                       \\ \cline{2-4} 
+                            & isomorphic-fetch & 12.4 kb                            & \textless 1 ms                                    \\ \cline{2-4} 
+                            & sync-request     & 22.5 kb                            & \textless 1 ms                                     \\ \cline{2-4} 
+                            & wikidata-sdk     & 53.3 kb                            & 1 ms                                       \\ \hline
+\multicolumn{2}{|l|}{Additional}               & 8.1 kb                             & n/a                                        \\ \hline
+\multicolumn{2}{|l|}{Core}                     & 300.7 kb                           & n/a                                        \\ \hline
+\multicolumn{2}{|l|}{\textbf{Total}}           & \textbf{1.3 mb}                    & \textbf{60 ms}                             \\ \hline
+\end{tabular}
+\caption{\textbf{Browser bundle breakdown.} Loading time is the approximate time it takes to import the script with browserify \texttt{require} in the Chrome data set. Here, 'Additional' is polyfills of node-specific APIs added by browserify. It's loading time is included in the loading time of the dependency it uses. Also, the 'Core' speed is only definable as the total minus the other parts, and is therefore not included.}
+\label{table:size}
+\end{table}
 
 \section*{Discussion}
 
