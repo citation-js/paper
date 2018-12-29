@@ -15,6 +15,7 @@
 \usepackage{minted}
 \usepackage{subcaption}
 \usepackage{multirow}
+\usepackage{a4wide}
 
 % for track changes. See https://tex.stackexchange.com/questions/65453/track-changes-in-latex
 \usepackage{changes}
@@ -46,7 +47,8 @@ With the goal of scientific publishing being the distribution of knowledge, it i
 
 However, there are lots of different stores, most with their own formats. On top of that, most citation managers, like Mendeley (www.mendeley.com), EndNote, Zotero (www.zotero.org) and even Office Word, have own formats as well \added[id=ew, remark={Add references where people can read (and verify!) about those internal formats, or explain in this paragraph (and then likely still need references). The REF can be a review paper or so...}]{REF}. Because of that, citation managers have to maintain parsers for most of those formats. Citation.js brings this functionality to most platforms by using JavaScript, allowing developers to have full control of the machine the software is running on.
 
-\deleted[id=lw, remark={not implemented yet, replace paragraph with something else}]{To still ensure performance on the client machine, or the web page if the program is running in the browser, Citation.js is fully modularised. Formats are bundled in thematic plugins, which can be installed separately. This can be seen as a regression with respect to for example Zotero; the plugins \textit{have} to be installed separately. However, it is a necessary choice, especially if Citation.js is to be used on anything other then dedicated sites.}
+To still ensure performance on the client machine, or the web page if the program is running in the browser, Citation.js is fully modularised. Formats are bundled in thematic plugins, which can be installed separately. This can be seen as a regression with respect to for example Zotero; the plugins \textit{have} to be installed separately. However, it is a necessary choice, especially if Citation.js is to be used on anything other then dedicated sites.
+
 
 \section*{Methods}
 
@@ -123,7 +125,7 @@ Cite.plugins.add('bibtex', {
 
   output: {
     bibtex (data, options) {
-...
+  ...
     }
   },
 
@@ -145,16 +147,38 @@ In this example package, line 1 loads Citation.js and lines 2-24 adds the plugin
 
 The methods for parsing input and formatting output are also included in a general class, \texttt{Cite}. Class instances also have access to opt-in version control (changes are tracked if an explicit flag is passed) and sorting. The latter currently doesn't have effect on CSL bibliographies, as the styles there provide their own sorting method.
 
+\subsubsection*{Supported formats}
+
+Table \ref{table:support} shows the formats supported by Citation.js at the moment.
+
+\begin{table}[ht]
+\caption{\textbf{Input and output format support.}
+This table only shows general support. For example, the "Wikidata" format is both used for Wikidata identifiers and Wikidata API results.}
+\label{table:support}
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Format} & \textbf{Input} & \textbf{Output} \\ \hline
+BibJSON         & x              &                 \\ \hline
+BibTeX          & x              & x               \\ \hline
+Bib.TXT         & x              & x               \\ \hline
+CSL             & (JSON)   & x               \\ \hline
+DOI             & x              &                 \\ \hline
+RIS             &                & x               \\ \hline
+Wikidata        & x              &                 \\ \hline
+\end{tabular}
+\end{table}
+
 \subsection*{Distribution}
 
 \subsubsection*{Browser use}
 
 For in-browser use, there is also a standalone JavaScript file available. This includes dependencies. This bundle is built automatically when publishing, and is available through a number of Content Delivery Networks (CDNs) that automatically distribute NPM packages. The \texttt{Cite} class can then be imported and used just as the NPM package, barring browser limitations.
 
-For simple use cases, like inserting static bibliographies, a separate tool was developed, called \texttt{citation.js-replacer}. When included on a page, this replaces every HTML element matching a certain element, with a bibliography. Figure \ref{code:use} shows an example of other use cases. For example, the basic use can be extended to add additional information to references, such as an Altmetric.com score icon or Dimensions citation count.
+For simple use cases, like inserting static bibliographies, a separate tool was developed, called \texttt{citation.js-replacer}. When included on a page, this replaces every HTML element matching a certain selector, with a bibliography. Figure \ref{code:use} shows an example of another use case. For example, the basic use can be extended to add additional information to references, such as an Altmetric.com score icon or Dimensions citation count.
 
-\begin{figure}[ht]
+\begin{figure}[bt!]
 \centering
+\begin{tiny}
 \begin{minted}[linenos,breaklines]{html}
 <html>
 <head>
@@ -183,6 +207,7 @@ For simple use cases, like inserting static bibliographies, a separate tool was 
 </body>
 </html>
 \end{minted}
+\end{tiny}
 \caption{\textbf{Basic use, including appending data to formatted bibliography entries.}
 Here, line 4 loads the library, line 10 imports \texttt{Cite}, and line 11 creates an interface for a bibliography with one entry, with metadata from a DOI. Lines 13-18 render the bibliography, with line 14 setting the output to HTML and lines 15-17 appending an Altmetric widget to the entry. Lines 20-21 show the output on the page. Lines 9 and 22 are to avoid race conditions in DOM access. Line 3 and 22 initialize the Altmetric badge.
 }
@@ -225,55 +250,67 @@ The Citation.js npm package can also be used as a library to create integrations
 
 \subsection*{Performance}
 
-The performance of the Citation.js package has been analyzed on a number of different platforms. A common theme is that in browsers, compiling the script and importing the library takes about 120 ms, compiling itself being a little less than half of that. Node.js on the other hand takes about 1 s to initialize, both when the source, consisting of multiple files is imported and when a bundle is imported. Since both Node.js and Chrome run on the V8 engine it is difficult to tell why this is happening. On subsequent runs in Chrome, compiling times reduce to about 8 ms.
+The performance of the Citation.js package has been analyzed on a number of different platforms. A common theme is that in browsers, compiling the script and importing the library takes about 120 ms, compiling itself being a little less than half of that. Node.js on the other hand takes about 1 s to initialize, both when the source consisting of multiple files is imported, and when a bundle is imported. This is possibly because Chrome caches compiled JavaScript reducing the compiling times from around 50 ms to about 8 ms.
 
-The results were obtained with the default settings for each of the platforms. In Chrome, this was achieved by using guest mode, while Node and FireFox were not configured to begin with.
+The results were obtained with the default settings for each of the platforms. In Chrome, this was achieved by using guest mode, while Node and Firefox were not configured to begin with.
 
-As shown in Fig. \ref{fig:perf}, time taken to import the library mainly consists of importing \texttt{@babel/polyfill}. After that the actual code is imported in two parts. In the first part, loading input-related code and the Cite interface, the main culprit is \texttt{addTypeParser}, with 0.35 ms per call on average. In the second part, loading output-related code, importing \texttt{citeproc-js} takes the longest with a single call of 8.50 ms.
+As shown in Fig. \ref{fig:perf} and Table \ref{table:size}, time taken to import the library mainly consists of importing \texttt{@babel/polyfill}. This is because adding the polyfills requires repeated feature detection. After that the actual code is imported in two parts. In the first part, where core functionality like the Cite interface is loaded, the main culprit is \texttt{addTypeParser}, with 0.13 ms per call on average. In the second part, loading output-related code, importing \texttt{citeproc-js} takes the longest with a single call of 2.82 ms.
+Note that that Firefox uses Just-In-Time compilation (JIT), compiling pieces of code when they are used a lot.
 
-\begin{figure}[ht]
-\begin{subfigure}{\textwidth}
+\begin{figure}[bt!]
+\begin{subfigure}{1.1\textwidth}
   \centering
   \includegraphics[width=\linewidth]{figures/perf_chrome.png}
-  \caption{\textbf{Chrome 68.}
-  Not shown is the compiling time (49.9 ms), which happened right before the events shown in the graph.}
+\caption{\textbf{Chrome 71}}
   \label{fig:perf-chrome}
 \end{subfigure}
-\begin{subfigure}{\textwidth}
+\begin{subfigure}{1.1\textwidth}
   \centering
   \includegraphics[width=\linewidth]{figures/perf_ff.png}
-  \caption{\textbf{Firefox 61}}
+  \caption{\textbf{Firefox 64}}
   \label{fig:perf-ff}
 \end{subfigure}
 \caption{\textbf{Initialization performance results on different platforms.}
-Actual timings may very depending on the device, OS and network status. Both graphs show three parts, one loading polyfills from \texttt{@babel/polyfill} taking up half the loading time, followed by two parts mainly loading input parsing and output formatting code respectively. Firefox takes about 100 ms overall, while Chrome takes 120 ms. Also note that Chrome and Firefox both take about 50 ms in compiling. However, Chrome does this upfront while Firefox uses Just-In-Time compilation (JIT), compiling pieces of code when they are used a lot.}
+Actual timings may very depending on the device, OS and cache. Note that Chrome starts with 40 ms of compiling time that is cached on subsequent runs. Firefox compiles JIT (Just-In-Time), while the code is running. Both graphs show three parts, one loading polyfills from \texttt{@babel/polyfill} taking up half the loading time, followed by two parts mainly loading input parsing and output formatting code respectively. Profiling data is available in supplemental information.}
 \label{fig:perf}
 \end{figure}
 
 While code execution is one part, one should also look into the file size. This is especially important in the browser, which has to fetch the library when loading the page.
 
 \begin{table}[ht]
-\begin{tabular}{|l|l|r|r|}
-\hline
-\multicolumn{2}{|c|}{\textbf{Part}}            & \multicolumn{1}{c|}{\textbf{Size}} & \multicolumn{1}{l|}{\textbf{Loading time}} \\ \hline
-\multirow{5}{*}{Dependency} & @babel/polyfill  & 226.7 kb                           & 30 ms                                      \\ \cline{2-4} 
-                            & citeproc-js      & 680.7 kb                           & 2 ms                                       \\ \cline{2-4} 
-                            & isomorphic-fetch & 12.4 kb                            & \textless 1 ms                                    \\ \cline{2-4} 
-                            & sync-request     & 22.5 kb                            & \textless 1 ms                                     \\ \cline{2-4} 
-                            & wikidata-sdk     & 53.3 kb                            & 1 ms                                       \\ \hline
-\multicolumn{2}{|l|}{Additional}               & 8.1 kb                             & n/a                                        \\ \hline
-\multicolumn{2}{|l|}{Core}                     & 300.7 kb                           & n/a                                        \\ \hline
-\multicolumn{2}{|l|}{\textbf{Total}}           & \textbf{1.3 mb}                    & \textbf{60 ms}                             \\ \hline
-\end{tabular}
-\caption{\textbf{Browser bundle breakdown.} Loading time is the approximate time it takes to import the script with browserify \texttt{require} in the Chrome data set. Here, 'Additional' is polyfills of node-specific APIs added by browserify. It's loading time is included in the loading time of the dependency it uses. Also, the 'Core' speed is only definable as the total minus the other parts, and is therefore not included.}
+\caption{\textbf{Browser bundle breakdown.} Running time is the approximate time it takes to import the script with browserify \texttt{require} in the Chrome data set. Note that a big part of the \texttt{plugin-csl} "own" code is serialized styles and locales from the CSL repository. Minified and g-zipped, the code is just 177 kb.}
 \label{table:size}
+\begin{tabular}{|l|l|r|r|r|r|}
+\hline
+\multicolumn{2}{|c|}{\multirow{2}{*}{\textbf{Part}}} & \multicolumn{3}{c|}{\textbf{Size}}                                                                                   & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Running time}}} \\ \cline{3-5}
+\multicolumn{2}{|c|}{}                               & \multicolumn{1}{c|}{\textbf{Own}} & \multicolumn{1}{c|}{\textbf{Dependencies}} & \multicolumn{1}{c|}{\textbf{Total}} & \multicolumn{1}{c|}{}                                       \\ \hline
+\multirow{10}{*}{Citation.js}    & Backport          & 5.9 kb                            & -                                          & 5.9 kb                              & 5.9 ms                                                      \\ \cline{2-6} 
+                                 & core              & 99.7 kb                           & 33.9 kb                                    & 133.5 kb                            & 8.3 ms                                                      \\ \cline{2-6} 
+                                 & plugin-bibjson    & 7.6 kb                            & -                                          & 7.6 kb                              & 3.5 ms                                                      \\ \cline{2-6} 
+                                 & plugin-bibtex     & 42.9 kb                           & -                                          & 42.9 kb                             & 2.6 ms                                                      \\ \cline{2-6} 
+                                 & plugin-csl        & 87.0 kb                           & 461.8 kb                                   & 548.9 kb                            & 3.2 ms                                                      \\ \cline{2-6} 
+                                 & plugin-doi        & 6.6 kb                            & -                                          & 6.6 kb                              & 0.6 ms                                                      \\ \cline{2-6} 
+                                 & plugin-ris        & 11.1 kb                           & -                                          & 11.1 kb                             & 0.5 ms                                                      \\ \cline{2-6} 
+                                 & plugin-wikidata   & 22.1 kb                           & 40.4 kb                                    & 62.4 kb                             & 2.2 ms                                                      \\ \cline{2-6} 
+                                 & name              & 16.6 kb                           & -                                          & 16.6 kb                             & 1.1 ms                                                      \\ \cline{2-6} 
+                                 & date              & 7.3 kb                            & -                                          & 7.3 kb                              & 0.2 ms                                                      \\ \hline
+\multirow{2}{*}{Additional}      & @babel/polyfill   & -                                 & 197.3 kb                                   & 197.3 kb                            & 32.0 ms                                                     \\ \cline{2-6} 
+                                 & Browserify        & -                                 & 6.8 kb                                     & 6.8 kb                              & 0.2 ms                                                      \\ \hline
+\multicolumn{2}{|l|}{Total}                          & 306.8 kb                          & 740.1 kb                                   & 1046.8 kb                           & 60.3 ms                                                     \\ \hline
+\end{tabular}
 \end{table}
 
 \section*{Discussion}
 
 \subsection*{Use of formal grammars for parsing}
 
-% The difference astro-cite advertises with is that it uses abstract syntax trees (ASTs)
+Apart from more common formats like JSON, XML and YAML, Citation.js has to parse a number of text formats with syntax specific to that format, like BibTeX and RIS. While one can use standard or even built-in parsers for common formats, that is usually not possible for the latter formats.
+
+To solve this, one can employ formal grammars, which can be translated into code parsing and validating input. Examples of libraries working with grammars are PEG.js and nearley.js. Creating grammars has the benefits of not having to write and maintain code validating and parsing input, and having a readable grammar instead of a complex program file.
+
+However, there are also drawbacks. Generating these grammars requires an extra build step, which in the case of Citation.js cannot be integrated with a similar step due to a lack of tooling. On top of that, generated code usually has poor performance or large size, and in the case of nearley.js uses a runtime library.
+
+Because of that it may be preferable to write custom parsers in some cases. Take RIS, which has no balanced brackets or quotes, and doesn't need much more than simply iterating over the individual lines.
 
 \subsection*{Converting between formats and standardized crosswalks with linked data}
 
@@ -291,11 +328,21 @@ In conclusion, a number of different things need to be taken into account when w
 
 \subsection*{Use of GraphQL for API queries}
 
+With REST APIs comes the problem of over-fetching and under-fetching. This means that when fetching a resource it may contain too much unneeded information, require additional calls to the API, or both. This causes unnecessary load on both the client and the server, as both have to process more calls with more network bandwidth.
+
+Using GraphQL APIs circumvents this problem by allowing the client to specify exactly what data it needs. However, not all endpoints may have a GraphQL API available, so this solution cannot be used reliably. Another drawback is that the GraphQL schema used for the API can impose limits, like pagination and some data simply not being available.
+
 \subsection*{Further modularisation}
+
+While the different plugins operate mostly independently now, they are still part of the bundle, slowing down the code unnecessarily in many use cases. It is possible to strip these plugins and publish them under a different name, like \texttt{@citation-js/plugin-software-formats}. To ensure compatibility, the 'classic' selection of plugins that are built-in right now could be published under \texttt{citation-js} functioning as it does right now, and a bare repository allowing for more customization could be published under \texttt{@citation-js/core}.
 
 \subsection*{Support for additional formats}
 
+Apart from the formats currently supported in Citation.js, there are plans to include more formats. These will be published in thematic plugins. For example, formats used to describe software projects are joined in the plugin \texttt{@citation-js/plugin-software-formats}. These formats will also include linked data scraped from web pages.
+
 \subsection*{Scraping from source versus fetching from central stores}
+
+When getting data from for example the Wikidata API or scraped from a web page, that data might be incomplete. However, if part of the data you get is the DOI linked to the entity queried, you could amend that data with data fetched from a central store like Crossref or DataCite. However, due to difficulties with prioritizing data sources and non-trivial merging conflicts this has not yet been implemented.
 
 \section*{Acknowledgments}
 
