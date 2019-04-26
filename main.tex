@@ -50,13 +50,15 @@ This leads us to two problems. First, citation managers need to maintain parsers
 
 \section*{Background}
 
+\section*{Approach}
+
 \subsection*{Software Development}
 
 The software was developed using modern standards: version control with Git, semantic versioning for releases~\citep{preston-werner_semantic_2013}, open source archives on GitHub (\url{https://github.com/larsgw/citation.js}; \url{https://github.com/citation-js}) and Zenodo (\url{https://doi.org/10.5281/zenodo.1005176}), browser bundles with browserify \citep{Halliday2018browserify/browserify}, compatible code with Babel \citep{Zhu2018babel/babel}, integration testing using the Travis-CI service~\citep{noauthor_travis_2018}, code linting (source code analysis) with ESLint~\citep{Zakas2018eslint/eslint} and Standard~\citep{Aboukhadijeh2018standard/standard}, checking \texttt{RegExp}'s for ReDOS vulnerabilities with \texttt{vuln-regex-detector}~\citep{davis_impact_2018}, and detailed documentation with JSDoc~\citep{Williams2018jsdoc3/jsdoc}.
 
 The development process took place with Node.js and npm. First off, any changes would be linted and tested with the aformentioned tools. Bugs or new features can also warrant the introduction of new test cases. If the changes work properly, they are then committed into the version control. If the changes warrant a new release, or if enough changes have piled up for a new release, the change log is updated. Updating the version in the package metadata automatically triggers the linters and test runners, preventing accidental mistakes. Afterwards, publishing the package to npm automatically triggers the generation of files necessary for the package. The scripts used for this are described in \url{https://github.com/larsgw/citation.js/blob/90cd68c/CONTRIBUTING.md#installing}.
 
-\subsection*{Libraries and others}
+\subsection*{Libraries}
 
 Apart from tools used for development, Citation.js also uses a number of runtime libraries. Their function and the reason for using them is explained below.
 
@@ -71,16 +73,14 @@ is the official CSL formatting library in JavaScript \citep{Bennett2018Juris-M/c
 is a utility library, only used for the Command Line Interface (CLI). It parses the command line arguments and generates documentation \citep{Holowaychuk2018tj/commander.js}.
 
 \item[\texttt{isomorphic-fetch}]
-is a specific polyfill, a library filling in support, for the \href{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API}{Fetch Application Programming Interface (API)}, a modern way of requesting web resources. It works in both Node.js and browsers \citep{Andrews2018matthew-andrews/isomorphic-fetch}.
+is a specific polyfill, a library filling in support, for the \href{https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API}{Fetch Application Programming Interface (Fetch API)}, a modern way of requesting web resources. It works in both Node.js and browsers \citep{Andrews2018matthew-andrews/isomorphic-fetch}.
 
 \item[\texttt{sync-request}]
-is a way to request web resources synchronously. While performing such operations synchronously is advised against in JavaScript, it is still useful for non-production scientific scripts, and demos \citep{Lindesay2018ForbesLindesay/sync-request}.
+is a way to request web resources synchronously \citep{Lindesay2018ForbesLindesay/sync-request}. While performing such operations synchronously is advised against in JavaScript, it is still useful for non-production scientific scripts, and demos.
 
 \item[\texttt{wikidata-sdk}]
 is a utility library for working with the Wikidata API \citep{Lathuiliere2018maxlath/wikidata-sdk,vrandecic_wikidata:_2014}
-\end{description}.
-
-\section*{Results}
+\end{description}
 
 \subsection*{Implementation}
 
@@ -239,6 +239,12 @@ Simple one-time conversions, with no extensive customization, can also be done w
 
 The Citation.js npm package can also be used as a library to create integrations with, among other things, word processing systems. For example, ReLaXed \citep{null2018RelaxedJS/ReLaXed} integrates Citation.js into the Pug templating language to generate citations when creating Portable Document Format (PDF) documents, and the npm package \href{https://npm.im/citation-js-showdown}{\texttt{citation-js-showdown}} was created as a demo on how to introduce syntax for citations in markdown.
 
+\section*{Results}
+
+\subsection*{Accuracy}
+
+\subsection*{Adaptation}
+
 \subsection*{Performance}
 
 The performance of the Citation.js package has been analyzed on a number of different platforms. Between browsers, compiling the script and importing the library takes about 120 ms, compiling itself taking a little less than half of that. Node.js on the other hand takes about 1 s to initialize, both when the source consisting of multiple files is imported, and when a bundle is imported. This is possibly because Chrome caches compiled JavaScript reducing the compiling times from around 50 ms to about 8 ms, as is explained in \cite{alle_improved_2018}.
@@ -293,13 +299,6 @@ While code execution is one part, one should also look into the file size. This 
 
 \section*{Discussion}
 
-\subsection*{Use of formal grammars for parsing}
-
-Apart from more common formats like JSON, XML and YAML (YAML Ain't Markup Language), Citation.js has to parse a number of text formats with syntax specific to that format, like BibTeX and RIS. While one can use standard or even built-in parsers for common formats, that is usually not possible for the latter formats.
-To solve this, one can employ formal grammars, which can be translated into code parsing and validating input. Examples of libraries working with grammars are PEG.js \citep{Majda2018pegjs/pegjs} and nearley.js \citep{Kartik2018kach/nearley}. Creating grammars has the benefits of not having to write and maintain code validating and parsing input, and having a readable grammar instead of a complex program file.
-
-However, there are also drawbacks. Generating these grammars requires an extra build step, which in the case of Citation.js cannot be integrated with the preceding step due to a lack of appropriate tooling. On top of that, early tests have shown generated code to have has poor performance or large size, and in the case of nearley.js requires a runtime library. Therefore, it may be preferable to write custom parsers in some cases. For example for RIS, which has no balanced brackets or quotes, and does not need much more than simply iterating over the individual lines.
-
 \subsection*{Converting between formats and standardized crosswalks with linked data}
 
 Converting input data like parsed BibTeX, BibJSON or Wikidata API results into another format and back can get very repetitive in terms of code. Yet, there are still cases where special handling is needed. Since different formats call for different needs, each plugin has developed its own system to deal with this. Unifying this into a single, performant, reusable and developer-friendly system would be preferable.
@@ -314,6 +313,19 @@ Lastly, some mappings are context-dependent. For example, consider the CSL-JSON 
 
 In conclusion, a number of different things need to be taken into account when writing a system for crosswalks. While a JSON-LD context would scale very well without a central format, most cases restrict the usefulness. Alternatively, a custom system could be developed that defines as much mapping as possible to and from a central format, with special cases for the third and last restrictions. Additional mappings to common formats, to cover properties missing from the central format could be added, with caution not to create critical dependencies on other formats. Or, given the complexity of the systems, it may be best to create for each format, allowing optimization for the special cases of that format.
 
+\subsection*{Scraping from source versus fetching from central stores}
+
+When getting data from, for example, the Wikidata API or scraped from a web page, that data may be incomplete. However, if part of the data you get is the DOI linked to the entity queried, you could amend that data with data fetched from a central store like Crossref or DataCite. Due to difficulties with prioritizing data sources and non-trivial merging conflicts this has not been implemented yet. Additionally, if the user specifically requests data from a specific API, it can be assumed they want that specific data to be used.
+
+\section*{Outlook}
+
+\subsection*{Use of formal grammars for parsing}
+
+Apart from more common formats like JSON, XML and YAML (YAML Ain't Markup Language), Citation.js has to parse a number of text formats with syntax specific to that format, like BibTeX and RIS. While one can use standard or even built-in parsers for common formats, that is usually not possible for the latter formats.
+To solve this, one can employ formal grammars, which can be translated into code parsing and validating input. Examples of libraries working with grammars are PEG.js \citep{Majda2018pegjs/pegjs} and nearley.js \citep{Kartik2018kach/nearley}. Creating grammars has the benefits of not having to write and maintain code validating and parsing input, and having a readable grammar instead of a complex program file.
+
+However, there are also drawbacks. Generating these grammars requires an extra build step, which in the case of Citation.js cannot be integrated with the preceding step due to a lack of appropriate tooling. On top of that, early tests have shown generated code to have has poor performance or large size, and in the case of nearley.js requires a runtime library. Therefore, it may be preferable to write custom parsers in some cases. For example for RIS, which has no balanced brackets or quotes, and does not need much more than simply iterating over the individual lines.
+
 \subsection*{Use of GraphQL for API queries}
 
 With REpresentational State Transfer (REST) APIs comes the problem of over-fetching and under-fetching. This means that when fetching a resource it may contain too much unneeded information, require additional calls to the API, or both. This causes unnecessary load on both the client and the server, as both have to process more calls with more network bandwidth.
@@ -323,10 +335,6 @@ Using GraphQL APIs circumvents this problem by allowing the client to specify ex
 \subsection*{Support for additional formats}
 
 Apart from the formats currently supported in Citation.js (see Table~\ref{table:support}), there are plans to include more formats such as EndNote, Machine-Readable Cataloging (MARC) \citep{avram_machine-readable_nodate}, the Zotero scheme and Office XML. These will be published in thematic plugins. For example, formats used to describe software projects are joined in the plugin \texttt{@citation-js/plugin-software-formats}. These formats will also include linked data scraped from web pages.
-
-\subsection*{Scraping from source versus fetching from central stores}
-
-When getting data from, for example, the Wikidata API or scraped from a web page, that data may be incomplete. However, if part of the data you get is the DOI linked to the entity queried, you could amend that data with data fetched from a central store like Crossref or DataCite. Due to difficulties with prioritizing data sources and non-trivial merging conflicts this has not been implemented yet. Additionally, if the user specifically requests data from a specific API, it can be assumed they want that specific data to be used.
 
 \section*{Conclusions}
 
