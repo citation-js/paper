@@ -266,6 +266,33 @@ Apart from property and type mappings, value conversion affect the accuracy of r
 
 \subsection*{Adaptation}
 
+Since Citation.js was published as an npm module, it has been used independently of the authors in a variety of use cases. With the GitHub Dependency graph, Google and via Twitter a number of those uses can be identified, listed in Table \ref{table:uses}. The download count is also increasing, as can be seen in Figure \ref{fig:downloads}.
+
+\begin{table}[bt]
+\caption{\textbf{Different uses of Citation.js found in the wild.} Although several patches are the result of reports from the developers of these projects, the authors never contributed directly.}
+\label{table:uses}
+\begin{tabular}{|p{3cm}|p{6cm}|l|l|}
+\hline
+\textbf{Implementation}       & \textbf{Use}                                             & \textbf{Parsing} & \textbf{Formatting} \\ \hline
+wcite                         & CLI tool for managing a Wikidata bibliography            & Wikidata         & Yes                 \\ \hline
+Reference Extractor           & Browser tool extracting references from Word documents   & No               & Yes                 \\ \hline
+PubPub.org                    & Live server-side generation of citations (with REST API) & No               & CSL, BibTeX         \\ \hline
+service-based-antipatterns    & Live in-browser generation of citations                  & No               & CLS, BibTeX         \\ \hline
+ds.korea.ac.kr, ccv.brown.edu & Static site generation of lists of publications          & BibTeX/DOI       & CSL                 \\ \hline
+dabai.compute.dtu.dk          & Live in-browser generation of lists of publications      & Wikidata         & CSL                 \\ \hline
+schol-js, RelaxedJS           & Document generation                                      & Yes              & Yes                 \\ \hline
+Ovide, Fonio                  & Experimental publishing platform                         & BibTeX           & CSL                 \\ \hline
+PolarisOS                     & Library management system and repository                 & No               & CSL                 \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{figure}[bt]
+\centering
+\includegraphics[width=\linewidth]{figures/download_counts.png}
+\caption{\textbf{Download counts since package creation.} Graph from npm-stat.com, data from npm.}
+\label{fig:downloads}
+\end{figure}
+
 \subsection*{Performance}
 
 The performance of the Citation.js package has been analyzed on a number of different platforms. Between browsers, compiling the script and importing the library takes about 120 ms, compiling itself taking a little less than half of that. Node.js on the other hand takes about 1 s to initialize, both when the source consisting of multiple files is imported, and when a bundle is imported. This is possibly because Chrome caches compiled JavaScript reducing the compiling times from around 50 ms to about 8 ms, as is explained in \cite{alle_improved_2018}.
