@@ -243,6 +243,27 @@ The Citation.js npm package can also be used as a library to create integrations
 
 \subsection*{Accuracy}
 
+A big part of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is unnecessarily much work, CSL-JSON was chosen as a central format. To review the mappings, the number of mapped properties and types relative to CSL-JSON were counted. Additionally, some poorly defined or duplicate properties were counted. Table \ref{table:completeness} shows those results.
+
+The BibTeX and BibJSON mappings, the latter being based on BibTeX, are severely limited by the low number of known properties and types. The authors could not find an authoritative list of properties, so examples from a range of sources were used instead. These lacked definitions of less-used properties. The RIS mapping has a lot of one-to-many and many-to-one mappings, making the number misleading in that the mapping is still unreliable, in spite of the high number of mapped properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. At that point, the CSL specification becomes a problem: some properties are not explained in great enough detail to discern the exact meaning without practical experience, and some details are considered incorrect \cite{wiernik_inconsistencies_2018}.
+
+Since most changes to mappings are trivial to implement, assuming the needed information is available in both formats, the real challenge to improve the numbers is reading the specification and sifting through examples of both formats, finding a possible match and then confirming that match. Confirming a mapping can be difficult when there is no authority to authoritative document on the matter, nor examples for edge cases.
+
+\begin{table}[bt]
+\caption{\textbf{Mapping statistics.}
+Number of CSL-JSON properties and types mapped to different formats, the CSL-JSON column being a total. Note that the intentions behind at least three properties are contested, the values of three other properties can usually be derived from other fields, ten properties are specific to citations and may not apply to resource-describing schemas, and sixteen properties could be reduced to just a few with linked data.}
+\label{table:completeness}
+\begin{tabular}{l|r|r|r|r|r|}
+\cline{2-6}
+                                 & \multicolumn{1}{l|}{CSL-JSON} & \multicolumn{1}{l|}{Wikidata} & \multicolumn{1}{l|}{BibTeX} & \multicolumn{1}{l|}{RIS} & \multicolumn{1}{l|}{BibJSON} \\ \hline
+\multicolumn{1}{|l|}{Properties} & 78                            & 25                            & 21                          & 41                       & 20                           \\ \hline
+\multicolumn{1}{|l|}{Types}      & 35                            & 31                            & 11                          & 30                       & 11                           \\ \hline
+\end{tabular}
+\end{table}
+
+Apart from property and type mappings, value conversion affect the accuracy of results as well. Since neither BibTeX nor RIS encode information about how names are built up, such information has to be estimated. While this is seems to be going fine for Western names, other naming systems may not work as well. Note however, that Zotero, which uses CSL, is not particularly geared towards any naming schemes other than the most simple, as noted by 
+\cite{darcus_non-western_2008}. Also, style guides themselves may not consider everything either \cite{qiu_scientific_2008,puniamoorthy_give_2008}.
+
 \subsection*{Adaptation}
 
 \subsection*{Performance}
