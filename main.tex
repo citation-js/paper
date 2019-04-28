@@ -46,7 +46,7 @@ With the primary goal of scholarly publishing being the distribution of knowledg
 
 Since most kinds of PIDs are intended for certain kinds of publication, be it data sets, journal articles, books or code repositories, the bibliographic information is stored in a format intended for that kind of publication. As a result, there are many different stores and many different formats: Libraries use Machine-Readable Cataloging (MARC) \cite{avram_machine-readable_nodate} and similar formats, Wikidata \citep{vrandecic_getting_2018} and WikiCite \citep{taraborelli_wikicite_2017} have their own scheme; DataCite has DataCite eXtensible Markup Language (XML) and JavaScript Object Notation (JSON) \citep{noauthor_datacite_2017}; and CrossRef has CrossRef Unixref XML \citep{noauthor_unixref_nodate}. Similarly, most citation managers have their own formats too: Zotero and EndNote have their own schemes \citep{vinckevicius_zotero_2017,noauthor_endnote_nodate}, and Office Word has an XML namespace \citep{noauthor_documentformat.openxml.bibliography_nodate}. On top of that there are a lot of old and new formats created for a variety of reasons, like BibTeX \citep{patashnik_bibtexing_1988}, Citation Style Language (CSL) \citep{zelle_csl_2012}, and Research Information Systems (RIS) \citep{noauthor_ris_2012}.
 
-This leads us to a problem: findabilty between communities is reduced \cite{godby_repository_2004}, and citation managers need to maintain parsers for numerous formats. Existing managers, like Zotero, either require a client desktop program or a server, or have entirely proprietary backends. This paper introduces Citation.js, a standalone JavaScript library capable of running in the browser, on a server and as a CLI. It consists of a set of parsers and formatters (see Figure \ref{fig:structure}) that together allow for the conversion of different metadata formats via a central format, CSL-JSON \cite{Bennett2018Juris-M/citeproc-js}. To better suit individual needs, and to minimize unnecessary code which is especially important in the browser, Citation.js is fully modularised. Formats are bundled in thematic plugins, which can be installed separately. For formatted bibliographies and citations, CSL templates and locales are used with citeproc-js \citep{zelle_csl_2012,Bennett2018Juris-M/citeproc-js}. This paper describes how Citation.js is developed, documented, tested, and released.
+This leads us to a problem: findability between organisations and disciplines is reduced \cite{godby_repository_2004,zinn_crosswalking_2016}, and citation managers need to maintain parsers for numerous formats. Existing managers, like Zotero, either require a client desktop program or a server, or have entirely proprietary backends. This paper introduces Citation.js, a standalone JavaScript library capable of running in the browser, on a server and as a CLI. It consists of a set of parsers and formatters (see Figure \ref{fig:structure}) that together allow for the conversion of different metadata formats via a central format, CSL-JSON \cite{Bennett2018Juris-M/citeproc-js}. To better suit individual needs, and to minimize unnecessary code which is especially important in the browser, Citation.js is fully modularised. Formats are bundled in thematic plugins, which can be installed separately. For formatted bibliographies and citations, CSL templates and locales are used with citeproc-js \citep{zelle_csl_2012,Bennett2018Juris-M/citeproc-js}. This paper describes how Citation.js is developed, documented, tested, and released.
 
 \begin{figure}[bt]
 \centering
@@ -59,17 +59,17 @@ This leads us to a problem: findabilty between communities is reduced \cite{godb
 
 \subsection*{Crosswalks}
 
-To convert one data format (or scheme) to another, a \emph{crosswalk} is needed. A crosswalk is a set of mappings between equivalent properties in different formats.
+To convert one data format (or scheme) to another, a \emph{crosswalk} is used. A crosswalk is a set of mappings between equivalent properties and entry types in different formats \cite{pierre_issues_1998}.
 
 First of all, for most properties a simple mapping suffices: \texttt{title} in BibTeX refers to the same concept as it does in BibJSON and CSL-JSON. On top of that, the property coincides with \texttt{TI} in RIS. This mapping could come in the form of a JSON Linked Data (JSON-LD) context, as done by CodeMeta \citep{jones_codemeta:_2017}, as eXtensible Stylesheet Language Transformations (XSLT), as done by Godby et al. \cite{godby_two_2003}.
 
-Second, some mappings are context-dependent. For example, consider the CSL-JSON properties \texttt{author} and \texttt{reviewed-author} in relation to the RIS properties author (\texttt{AU}) and reviewer (usually \texttt{C4}). In normal entries, \texttt{AU} maps to \texttt{author}. However, if the entry being converted is a review, \texttt{AU} maps to \texttt{reviewed-author} while \texttt{author} maps to \texttt{C4}.
+Second, some mappings are context-dependent. For example, consider the CSL-JSON properties \texttt{author} and \texttt{reviewed-author} in relation to the RIS properties author (\texttt{AU}) and reviewer (usually \texttt{C4}). In normal entries, \texttt{AU} maps to \texttt{author}. However, if the entry being converted has the review entry type, \texttt{AU} maps to \texttt{reviewed-author} while \texttt{author} maps to \texttt{C4}.
 
-Third, the data format needs to be converted. While \texttt{title} in BibTeX can have formatting in the form of \TeX, \texttt{title} in CSL-JSON uses a subset of HTML for formatting, and \texttt{TI} in RIS does not have formatting at all. Properties can also have different data types. In CSL-JSON, \texttt{author} is a list of objects, while \texttt{authors} in BibTeX, which describes the same concept, is serialized text delimited by \texttt{" and "}.
+Third, the data format of the values needs to be converted. While \texttt{title} in BibTeX can have formatting in the form of \TeX, \texttt{title} in CSL-JSON uses a subset of HTML for formatting, and \texttt{TI} in RIS does not have formatting at all. Properties can also have different data types. In CSL-JSON, \texttt{author} is a list of objects, while \texttt{authors} in BibTeX, which describes the same concept, is serialized text delimited by \texttt{" and "}.
 
-Lastly, there might not be a one-to-one mapping between properties. For instance, \texttt{pages} in CSL-JSON maps to both \texttt{start} and \texttt{end} in Citation File Format (CFF) \citep{druskat_citation_2018}. Similarly, \texttt{pages}, \texttt{issue}, \texttt{volume} and \texttt{ISSN} are all top-level properties in CSL-JSON, while the corresponding properties in Wikidata are proposed to be nested in the journal property.
+Finally, there might not be a one-to-one mapping between properties. For instance, \texttt{pages} in CSL-JSON maps to both \texttt{start} and \texttt{end} in Citation File Format (CFF) \citep{druskat_citation_2018}. Similarly, \texttt{pages}, \texttt{issue}, \texttt{volume} and \texttt{ISSN} are all top-level properties in CSL-JSON, while the corresponding properties in Wikidata are proposed to be nested in the journal property.
 
-Since the last two aspects can lead to information loss crosswalks often need to be one-directional converters between two formats. To not have to create crosswalks between every possible combination of supported formats, one could define a central format, similar to the "interoperable core" in the "long translation path" proposed by Godby et al. \cite{godby_two_2003}. It is however important that the central format can hold as much information as should be represented in any of the output formats, as to prevent information loss when converting between two formats.
+Since the last two aspects can lead to information loss, crosswalks often need to be one-directional converters between two formats. To not have to create crosswalks between every possible combination of supported formats, one could define a central format, similar to the "interoperable core" in the "long translation path" proposed by Godby et al. \cite{godby_two_2003}. It is however important that the central format can hold as much information as should be represented in any of the output formats, as to prevent information loss when converting between two formats.
 
 \subsection*{Existing tools}
 
@@ -265,37 +265,36 @@ The Citation.js npm package can also be used as a library to create integrations
 
 \subsection*{Accuracy}
 
-A big part of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is unnecessarily much work, CSL-JSON was chosen as a central format. To review the mappings, the number of mapped properties and types relative to CSL-JSON were counted. Additionally, some poorly defined or duplicate properties were counted. Table \ref{table:completeness} shows those results.
+A big part of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is unnecessarily much work, CSL-JSON was chosen as a central format. Not every property can be mapped: the intentions behind at least three properties are contested, the values of three other properties can usually be derived from other fields, ten properties are specific to citations and may not apply to resource-describing schemas, and sixteen properties could be reduced to just a few with linked data. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
 
 The BibTeX and BibJSON mappings, the latter being based on BibTeX, are severely limited by the low number of known properties and types. The authors could not find an authoritative list of properties, so examples from a range of sources were used instead. These lacked definitions of less-used properties. The RIS mapping has a lot of one-to-many and many-to-one mappings, making the number misleading in that the mapping is still unreliable, in spite of the high number of mapped properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. At that point, the CSL specification becomes a problem: some properties are not explained in great enough detail to discern the exact meaning without practical experience, and some details are considered incorrect \cite{wiernik_inconsistencies_2018}.
 
 Since most changes to mappings are trivial to implement, assuming the needed information is available in both formats, the real challenge to improve the numbers is reading the specification and sifting through examples of both formats, finding a possible match and then confirming that match. Confirming a mapping can be difficult when there is no authority to authoritative document on the matter, nor examples for edge cases.
 
 \begin{table}[bt]
-\caption{\textbf{Mapping statistics.}
-Number of CSL-JSON properties and types mapped to different formats, the CSL-JSON column being a total. Note that the intentions behind at least three properties are contested, the values of three other properties can usually be derived from other fields, ten properties are specific to citations and may not apply to resource-describing schemas, and sixteen properties could be reduced to just a few with linked data.}
+\caption{\textbf{Mapping statistics.} The number of CSL-JSON properties and types mapped to different formats. }
 \label{table:completeness}
 \begin{tabular}{l|r|r|r|r|r|}
 \cline{2-6}
-                                 & \multicolumn{1}{l|}{CSL-JSON} & \multicolumn{1}{l|}{Wikidata} & \multicolumn{1}{l|}{BibTeX} & \multicolumn{1}{l|}{RIS} & \multicolumn{1}{l|}{BibJSON} \\ \hline
-\multicolumn{1}{|l|}{Properties} & 78                            & 25                            & 21                          & 41                       & 20                           \\ \hline
-\multicolumn{1}{|l|}{Types}      & 35                            & 31                            & 11                          & 30                       & 11                           \\ \hline
+                                          & \multicolumn{1}{l|}{\textbf{CSL-JSON}} & \multicolumn{1}{l|}{\textbf{Wikidata}} & \multicolumn{1}{l|}{\textbf{BibTeX}} & \multicolumn{1}{l|}{\textbf{RIS}} & \multicolumn{1}{l|}{\textbf{BibJSON}} \\ \hline
+\multicolumn{1}{|l|}{\textbf{Properties}} & 78                                     & 24 (31\%)                              & 21 (27\%)                            & 41 (53\%)                         & 20 (27\%)                             \\ \hline
+\multicolumn{1}{|l|}{\textbf{Types}}      & 35                                     & 31 (89\%)                              & 11 (31\%)                            & 30 (86\%)                         & 11 (31\%)                             \\ \hline
 \end{tabular}
 \end{table}
 
 Apart from property and type mappings, value conversion affect the accuracy of results as well. Since neither BibTeX nor RIS encode information about how names are built up, such information has to be estimated. While this is seems to be going fine for Western names, other naming systems may not work as well. Note however, that Zotero, which uses CSL, is not particularly geared towards any naming schemes other than the most simple, as noted by 
 \cite{darcus_non-western_2008}. Also, style guides themselves may not consider everything either \cite{qiu_scientific_2008,puniamoorthy_give_2008}.
 
-\subsection*{Adaptation}
+\subsection*{Impact}
 
 Since Citation.js was published as an npm module, it has been used independently of the authors in a variety of use cases. With the GitHub Dependency graph, Google and via Twitter a number of those uses can be identified, listed in Table \ref{table:uses}. The download count is also increasing, as can be seen in Figure \ref{fig:downloads}.
 
 \begin{table}[bt]
-\caption{\textbf{Different uses of Citation.js found in the wild.} Although several patches are the result of reports from the developers of these projects, the authors never contributed directly.}
+\caption{\textbf{Different uses of Citation.js found in the wild.} Some of these projects contributed valuable feedback to the development of Citation.js.}
 \label{table:uses}
 \begin{tabular}{|p{3cm}|p{6cm}|l|l|}
 \hline
-\textbf{Implementation}       & \textbf{Use}                                             & \textbf{Parsing} & \textbf{Formatting} \\ \hline
+\textbf{User}       & \textbf{Use}                                             & \textbf{Parsing} & \textbf{Formatting} \\ \hline
 wcite                         & CLI tool for managing a Wikidata bibliography            & Wikidata         & Yes                 \\ \hline
 Reference Extractor           & Browser tool extracting references from Word documents   & No               & Yes                 \\ \hline
 PubPub.org                    & Live server-side generation of citations (with REST API) & No               & CSL, BibTeX         \\ \hline
@@ -342,7 +341,7 @@ Actual timings may vary depending on the device, operating system and cache. Not
 \label{fig:perf}
 \end{figure}
 
-While code execution is one part, one should also look into the file size. This is especially important in the browser, which has to fetch the library when loading the page.
+While code execution is one part, one should also look into the file size. This is especially important in the browser, which has to fetch the library when loading the page. The biggest part is \texttt{citeproc-js}, accounting for almost half of the file size. Additionally, built-in CSL templates and locales should also be counted. A complete overview can be found in \ref{table:size}.
 
 \begin{table}[bt!]
 \caption{\textbf{Browser bundle breakdown.} Running time is the time it takes to import that part of the script with browserify \texttt{require} in the Chrome data set. Note that a big part of the \texttt{plugin-csl} "own" code is serialized styles and locales from the CSL repository. Minified the code is 702 kB, which is reduced to 177 kB with gzip and 164 kB with Brotli, both with default compression levels.}
@@ -373,17 +372,17 @@ While code execution is one part, one should also look into the file size. This 
 
 Converting input data like parsed BibTeX, BibJSON or Wikidata API results into another format and back can get very repetitive in terms of code. Yet, there are still cases where special handling is needed. Since different formats call for different needs, each plugin has developed its own system to deal with this. Unifying this into a single, performant, reusable and developer-friendly system would be preferable.
 
-While a JSON-LD context would scale very well without a central format, most cases restrict the usefulness. Consider the \texttt{page} property in CSL-JSON, mapping to the \texttt{first} and \texttt{last} properties in CFF. If the nested values were deserialized, this could be expressed in JSON-LD contexts. However, in the first example it cannot, since JSON-LD cannot distinguish between parts of strings.
+Jones et al. use a JSON-LD context for this \cite{jones_codemeta:_2017}. While a JSON-LD context would scale very well without a central format, most cases restrict the usefulness. Consider the \texttt{page} property in CSL-JSON, mapping to the \texttt{first} and \texttt{last} properties in CFF. If the nested values were deserialized, this could be expressed in JSON-LD contexts. However, in the first example it cannot, since JSON-LD cannot distinguish between parts of strings.
 
 Alternatively, a custom system could be developed that defines as much mapping as possible to and from a central format, with special cases for context-dependent mappings and one-to-many mappings. It would be difficult to do this entirely language-agnostic, since serialization and deserialization usually requires some amount of scripting.
 
 \subsection*{CSL-JSON as a central format}
 
-As mentioned in the Background, an important feature of the central format is that it can hold any information needed for the output formats---if it cannot, information loss can occur. Citation.js currently has CSL-JSON as a central format, as it has a (mostly) well-defined list of properties and entity types, an authority to clear up any confusion, and relatively good support for most metadata while still being simple to work with.
+As mentioned in the Background, an important feature of the central format is that it can hold any information needed for the output formats---if it cannot, information loss can occur. Citation.js currently uses CSL-JSON as a central format, as it has a (mostly) well-defined list of properties and entry types, an authority to clear up any confusion, and relatively good support for most metadata while still being simple to work with.
 
 However, CSL-JSON is not perfect, and information loss is definitely possible. This is currently the case with the software entry type, which does not exist in CSL 1.0.1, and is represented by the \texttt{book} type by convention. When converting Wikidata input consisting of a computer program to RIS output, the fact that it is in fact a computer program is lost, even though both formats support it as an entry type.
 
-A solution for this would be to extend the format to allow for the missing entry type or property, assuming the specification authors agree. Otherwise, a custom extension could be made. Doing that for every future shortcoming may not be sustainable though, since it effectively creates a new poorly-supported standard to add to the mix. Choosing a different format is among the possibilities, but the authors have not found a suitable candidate yet; even Wikidata, which is intended to cover everything, is changing constantly and even if a proper specification is created, the question remains whether the bulk of the publication data is up to date.
+A solution for this would be to extend the format to allow for the missing entry type or property, assuming the specification authors agree. Otherwise, a custom extension could be made. Doing that for every future shortcoming may not be sustainable though, since it effectively creates a new poorly-supported standard to add to the mix. Choosing a different format is among the possibilities, but we have not found a suitable candidate; even Wikidata, which is intended to cover everything, is changing constantly and even if a proper specification is created, the question remains whether the bulk of the publication data is up to date.
 
 If no suitable format is found, one might add additional mappings to common formats, to cover properties missing from the central format. Then, find a path for every property through the crosswalks to get to the end format. That way, one could bypass the central format in specific cases only, keeping an easy mapping for common properties.
 
@@ -398,7 +397,7 @@ When getting data from, for example, the Wikidata API or scraped from a web page
 Apart from more common formats like JSON, XML and YAML (YAML Ain't Markup Language), Citation.js has to parse a number of text formats with syntax specific to that format, like BibTeX and RIS. While one can use standard or even built-in parsers for common formats, that is usually not possible for the latter formats.
 To solve this, one can employ formal grammars, which can be translated into code parsing and validating input. Examples of libraries working with grammars are PEG.js \citep{Majda2018pegjs/pegjs} and nearley.js \citep{Kartik2018kach/nearley}. Creating grammars has the benefits of not having to write and maintain code validating and parsing input, and having a readable grammar instead of a complex program file.
 
-However, there are also drawbacks. Generating these grammars requires an extra build step, which in the case of Citation.js cannot be integrated with the preceding step due to a lack of appropriate tooling. On top of that, early tests have shown generated code to have has poor performance or large size, and in the case of nearley.js requires a runtime library. Therefore, it may be preferable to write custom parsers in some cases. For example for RIS, which has no balanced brackets or quotes, and does not need much more than simply iterating over the individual lines.
+However, there are also drawbacks. Generating these grammars requires an extra build step, which in the case of Citation.js cannot be integrated with the preceding step due to a lack of appropriate tooling. On top of that, early tests have shown generated code to have poor performance or large size, and in the case of nearley.js requires a runtime library. Therefore, it may be preferable to write custom parsers in some cases. For example for RIS, which has no balanced brackets or quotes, and does not need much more than simply iterating over the individual lines.
 
 \subsection*{Use of GraphQL for API queries}
 
