@@ -402,9 +402,9 @@ However, there are also drawbacks. Generating these grammars requires an extra b
 
 \subsection*{Use of GraphQL for API queries}
 
-With REpresentational State Transfer (REST) APIs comes the problem of over-fetching and under-fetching. This means that when fetching a resource it may contain too much unneeded information, require additional calls to the API, or both. This causes unnecessary load on both the client and the server, as both have to process more calls with more network bandwidth.
+With REpresentational State Transfer (REST) APIs comes the problem of over-fetching and under-fetching. This means that when fetching a resource it may contain too much unneeded information, require additional calls to the API, or both. This causes unnecessary load on both the client and the server, as both have to process more calls with more network bandwidth. 
 
-Using GraphQL APIs circumvents this problem by allowing the client to specify exactly what data it needs \citep{noauthor_graphql_2018}. However, not many endpoints have a GraphQL API available, so this solution cannot be used everywhere.
+This is especially relevant with Wikidata, which in its linked-data nature does not expose the name of the authors or journals it links to; to retrieve that, additional requests are needed. To overcome this a better way of generating those requests locally could be implemented, or a GraphQL server could be developed by allowing the client to specify exactly what data it needs \citep{noauthor_graphql_2018}.
 
 \subsection*{Support for additional formats}
 
