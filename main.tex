@@ -265,12 +265,12 @@ The Citation.js npm package can also be used as a library to create integrations
 
 A important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is unnecessarily much work, CSL-JSON was chosen as a central format. Not every property can be mapped: the intentions behind at least three properties are contested, the values of three other properties can usually be derived from other fields, ten properties are specific to citations and may not apply to resource-describing schemas, and sixteen properties could be reduced to just a few with linked data. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
 
-The BibTeX and BibJSON mappings, the latter being based on BibTeX, are severely limited by the low number of known properties and types. The authors could not find an authoritative list of properties, so examples from a range of sources were used instead. These lacked definitions of less-used properties. The RIS mapping has a lot of one-to-many and many-to-one mappings, making the number misleading in that the mapping is still unreliable, in spite of the high number of mapped properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. At that point, the CSL specification becomes a problem: some properties are not explained in great enough detail to discern the exact meaning without practical experience, and some details are considered incorrect \citep{wiernik_inconsistencies_2018}.
+The BibTeX and BibJSON mappings, the latter being based on BibTeX, are limited by the low number of known properties and types. The authors could not find an authoritative list of properties, so examples from a range of sources were used instead. These lacked definitions of less-used properties. The RIS mapping has a lot of one-to-many and many-to-one mappings, making the number misleading in that the mapping is still unreliable, in spite of the high number of mapped properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. At that point, the CSL specification becomes a problem: some properties are not explained in great enough detail to discern the exact meaning without practical experience, and some details are considered incorrect \citep{wiernik_inconsistencies_2018}.
 
 Since most changes to mappings are trivial to implement, assuming the needed information is available in both formats, the real challenge to improve the numbers is reading the specification and sifting through examples of both formats, finding a possible match and then confirming that match. Confirming a mapping can be difficult when there is no authority to authoritative document on the matter, nor examples for edge cases.
 
 \begin{table}[bt]
-\caption{\textbf{Mapping statistics.} The number of CSL-JSON properties and types mapped to different formats. }
+\caption{\textbf{Mapping statistics.} The number of CSL-JSON properties and types mapped to different formats. See Table S1. }
 \label{table:completeness}
 \begin{tabular}{l|r|r|r|r|r|}
 \cline{2-6}
@@ -281,7 +281,7 @@ Since most changes to mappings are trivial to implement, assuming the needed inf
 \end{table}
 
 Apart from property and type mappings, value conversion affect the accuracy of results as well. Since neither BibTeX nor RIS encode information about how names are built up, such information has to be estimated. While this is seems to be going fine for Western names, other naming systems may not work as well. Note however, that Zotero, which uses CSL, is not particularly geared towards any naming schemes other than the most simple, as noted by 
-\cite{darcus_non-western_2008}. Also, style guides themselves may not consider everything either \citep{qiu_scientific_2008,puniamoorthy_give_2008}.
+\cite{darcus_non-western_2008}. Also, style guides themselves may not have rules for non-Western names either \citep{qiu_scientific_2008,puniamoorthy_give_2008}.
 
 \subsection*{Impact}
 
@@ -308,7 +308,7 @@ PolarisOS \citep{Ribeyre2019MyScienceWork/PolarisOS} & Library management system
 \begin{figure}[bt]
 \centering
 \includegraphics[width=\linewidth]{figures/download_counts.png}
-\caption{\textbf{Download counts since package creation.} Graph from npm-stat.com, data from npm.}
+\caption{\textbf{Download counts since package creation.} Graph from npm-stat.com, data from npm. See Data S1.}
 \label{fig:downloads}
 \end{figure}
 
@@ -335,7 +335,7 @@ Note that that Firefox uses Just-In-Time (JIT) compilation, compiling pieces of 
   \label{fig:perf-ff}
 \end{subfigure}
 \caption{\textbf{Initialization performance results on different platforms.}
-Actual timings may vary depending on the device, operating system and cache. Note that Chrome starts with 40 ms of compiling time that is cached on subsequent runs. Firefox compiles JIT, while the code is running. Both graphs show three parts, one loading polyfills from \texttt{@babel/polyfill} taking up half the loading time, followed by two parts mainly loading core functionality and plugins respectively. Profiling data is available in supplemental information.}
+Actual timings may vary depending on the device, operating system and cache. Note that Chrome starts with 40 ms of compiling time that is cached on subsequent runs. Firefox compiles JIT, while the code is running. Both graphs show three parts, one loading polyfills from \texttt{@babel/polyfill} taking up half the loading time, followed by two parts mainly loading core functionality and plugins respectively. Profiling data is available as Data S2 and S3.}
 \label{fig:perf}
 \end{figure}
 
