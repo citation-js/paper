@@ -237,8 +237,9 @@ Here, line 3 loads the Altmetric widget code, line 4 loads the library, line 10 
 \end{figure}
 
 \begin{figure}[bt!]
-\centering
-\includegraphics[width=\linewidth]{figures/Figure_4.png}
+\begin{small}
+Hallmann, C. A., Sorg, M., Jongejans, E., Siepel, H., Hofland, N., Schwan, H., … de Kroon, H. (2017). More than 75 percent decline over 27 years in total flying insect biomass in protected areas. \emph{PLOS ONE, 12}(10), e0185809. https://doi.org/10.1371/journal.pone.0185809 \includegraphics[height=1.5\fontcharht\font`\B]{altmetric.png}
+\end{small}
 \caption{\textbf{Result of the code in Fig.~\ref{code:use}.} Bibliography consisting of \cite{hallmann_more_2017} in APA style. Note the Altmetric badge at the end.}
 \label{fig:use}
 \end{figure}
@@ -322,18 +323,7 @@ As shown in Fig.~\ref{fig:perf} and Table~\ref{table:size}, time taken to import
 Note that that Firefox uses Just-In-Time (JIT) compilation, compiling pieces of code when they are used a lot.
 
 \begin{figure}[bt!]
-\begin{subfigure}{\textwidth}
-\centering
-\includegraphics[width=\linewidth]{figures/Figure_6a.png}
-\caption{\textbf{Chrome 71}}
-\label{fig:perf-chrome}
-\end{subfigure}
-\begin{subfigure}{\textwidth}
-  \centering
-  \includegraphics[width=\linewidth]{figures/Figure_6b.png}
-  \caption{\textbf{Firefox 64}}
-  \label{fig:perf-ff}
-\end{subfigure}
+\includegraphics[width=\linewidth]{figures/Figure_6.png}
 \caption{\textbf{Initialization performance results on different platforms.}
 Actual timings may vary depending on the device, operating system and cache. Note that Chrome (a) starts with 40 ms of compiling time that is cached on subsequent runs. Firefox (b) compiles JIT, while the code is running. Both graphs show three parts, one loading polyfills from \texttt{@babel/polyfill} taking up half the loading time, followed by two parts mainly loading core functionality and plugins respectively. Profiling data is available as Data S2 and S3.}
 \label{fig:perf}
