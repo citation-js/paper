@@ -59,7 +59,7 @@ This leads to reduced findability between organisations and disciplines \citep{g
 
 \subsection*{Crosswalks}
 
-To convert one data format (or scheme) to another, a \emph{crosswalk} is used. A crosswalk is a set of mappings between equivalent properties and entry types in different formats \citep{pierre_issues_1998}. First of all, for most properties a simple mapping suffices: \texttt{title} in BibTeX refers to the same concept as it does in BibJSON and CSL-JSON. On top of that, the property coincides with \texttt{TI} in RIS. This mapping could come in the form of a JSON Linked Data (JSON-LD) context, as done by CodeMeta \citep{jones_codemeta:_2017}, as eXtensible Stylesheet Language Transformations (XSLT), as done by \cite{godby_two_2003}.
+To convert one data format (or scheme) to another, a \emph{crosswalk} is used. A crosswalk is a set of mappings between equivalent properties and entry types in different formats \citep{pierre_issues_1998}. First of all, for most properties a simple mapping suffices: \texttt{title} in BibTeX refers to the same concept as it does in BibJSON and CSL-JSON. On top of that, the property coincides with \texttt{TI} in RIS. This mapping could come in the form of a JSON Linked Data (JSON-LD) context, as done by CodeMeta \citep{jones_codemeta:_2017}, as eXtensible Stylesheet Language Transformations (XSLT), as discussed by \cite{godby_two_2003}.
 
 Second, some mappings are context-dependent. For example, consider the CSL-JSON properties \texttt{author} and \texttt{reviewed-author} in relation to the RIS properties author (\texttt{AU}) and reviewer (usually \texttt{C4}). Normally, \texttt{AU} maps to \texttt{author}. However, if the entry being converted has the review entry type, \texttt{AU} maps to \texttt{reviewed-author} while \texttt{author} maps to \texttt{C4}.
 
@@ -286,7 +286,7 @@ Apart from property and type mappings, value conversion affect the accuracy of r
 
 \subsection*{Impact}
 
-Since Citation.js was published as an npm module, it has been used independently of the authors in a variety of use cases. With the GitHub Dependency graph, Google and via Twitter a number of those uses can be identified, listed in Table \ref{table:uses}. The download count is also increasing, as can be seen in Figure \ref{fig:downloads}.
+Since Citation.js was published as an npm module, it has been used independently of the authors in a variety of use cases. With the GitHub Dependency graph, Google and via Twitter a number of those uses can be identified, listed in Table \ref{table:uses}. The download count is also increasing, as can be seen in Figure \ref{fig:downloads}. Between the first version in October 2016, and the 26 April 2019, our package was downloaded a total of 26,718 times.
 
 \begin{table}[bt]
 \caption{\textbf{Different uses of Citation.js found in the wild.} Some of these projects contributed valuable feedback to the development of Citation.js.}
