@@ -260,17 +260,37 @@ Simple one-time conversions, with no extensive customization, can also be done w
 
 The Citation.js npm package can also be used as a library to create integrations with, among other things, word processing systems. For example, ReLaXed \citep{null2018RelaxedJS/ReLaXed} integrates Citation.js into the Pug templating language to generate citations when creating Portable Document Format (PDF) documents, and the npm package \href{https://npm.im/citation-js-showdown}{\texttt{citation-js-showdown}} was created as a demo on how to introduce syntax for citations in Markdown.
 
+\subsection*{Evaluation}
+
+\subsubsection*{Coverage}
+
+Coverage was determined by creating two spreadsheets, one with all of the CSL types and one with all of the CSL-JSON properties. Then, columns where created for other supported formats and filled in with the corresponding type or property in that format. The amount of mappings were counted as a percentage of the total possible mappings, i.e. the total amount of types or properties, available in CSL.
+
+This skews the perspective as not all properties and types can plausibly be mapped, either because no equivalent term exists in the other format, or because the existence is currently unknown to the authors. This is explained more concretely in the results.
+
+\subsubsection*{Impact}
+
+To collect dependent projects, the GitHub Dependency Networks was used, which lists other GitHub repositories using Citation.js (to some capacity). To search for dependent repositories on different hosting platforms, a search on the respective hosting platforms and Google was carried out. Additionally, a number of projects previously known to the authors were listed.
+
+Of those lists, a diverse set of projects was extracted by hand, followed by a check to see if and how Citation.js is used. All projects listed are, as a consequence, open source.
+
+For download counts, npm-stat.com was chosen because of its ability to collect download statistics over specific, multi-year time frames.
+
+\subsubsection*{Performance}
+
+Performance statistics were gathered by recording runtime performance in the Chrome DevTools and the Firefox Developer Tools while importing Citation.js in the browser. The results were obtained with the default settings for each of the platforms. In Chrome, this was achieved by using \emph{guest mode}, while Node and Firefox were not configured to begin with.
+
 \section*{Results}
 
 \subsection*{Coverage}
 
-A important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is unnecessarily much work, CSL-JSON was chosen as a central format. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
+A important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is often unnecessarily much work, CSL-JSON was chosen as a central format. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
 
 While the numbers may seem low, note that not every CSL-JSON property can be mapped: the intentions behind at least three properties are contested \citep{wiernik_inconsistencies_2018}, the values of three other properties can usually be derived from other fields, ten properties are specific to citations and may not apply to resource-describing schemas, and sixteen properties could be reduced to just a few with linked data. Additionally, a number of properties have limited documentation and usage, making it difficult to determine what the exact meaning is.
 
 On top of that, the other formats may not have enough well-defined properties to map either. The BibTeX and BibJSON mappings, the latter being based on BibTeX, are limited by the low number of known properties and types. Without an authoritative list of properties, examples from a range of sources were used to define a mapping, which consequently lacked lesser-used properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. In fact, a recent Citation.js update nearly doubled the number of mapped properties to 46 (59\%). At that point, the CSL specification becomes a limiting again.
 
-The number of mapped RIS properties is actually too high; the RIS mapping has a lot of one-to-many and many-to-one mappings, which makes it inconsistent and unreliable, while artificially raising the number of mapped properties. Since there is no authoritative document other than Wikipedia, the mapping is based on the Zotero translator for RIS.
+The number of mapped RIS properties is actually higher than expected; the RIS mapping has a lot of one-to-many and many-to-one mappings, which makes it inconsistent and unreliable, while artificially raising the number of mapped properties. Since there is no authoritative document other than Wikipedia, the mapping is partially based on the Zotero translator for RIS.
 
 \begin{table}[bt]
 \caption{\textbf{Mapping statistics.} The number of CSL-JSON properties and types mapped to different formats. See Table S1. }
@@ -318,8 +338,6 @@ PolarisOS \citep{Ribeyre2019MyScienceWork/PolarisOS} & Library management system
 \subsection*{Performance}
 
 The performance of the Citation.js package has been analyzed on a number of different platforms. Between browsers, compiling the script and importing the library takes about 120 ms, compiling itself taking a little less than half of that. Node.js on the other hand takes about 1 s to initialize, both when the source consisting of multiple files is imported, and when a bundle is imported. This is possibly because Chrome caches compiled JavaScript reducing the compiling times from around 50 ms to about 8 ms, as is explained in \cite{alle_improved_2018}.
-
-The results were obtained with the default settings for each of the platforms. In Chrome, this was achieved by using \emph{guest mode}, while Node and Firefox were not configured to begin with.
 
 As shown in Fig.~\ref{fig:perf} and Table~\ref{table:size}, time taken to import the library mainly consists of importing \texttt{@babel/polyfill}. This is because adding the polyfills requires repeated feature detection. After that the actual code is imported in two parts. In the first part, where core functionality like the Cite interface is loaded, the main culprit is \texttt{addTypeParser}, with 0.13 ms per call on average. In the second part, loading output-related code, importing \texttt{citeproc-js} takes the longest with a single call of 2.82 ms.
 Note that that Firefox uses Just-In-Time (JIT) compilation, compiling pieces of code when they are used a lot.
