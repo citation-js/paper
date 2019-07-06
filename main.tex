@@ -264,21 +264,19 @@ The Citation.js npm package can also be used as a library to create integrations
 
 \subsubsection*{Coverage}
 
-Coverage was determined by creating two spreadsheets, one with all of the CSL types and one with all of the CSL-JSON properties. Then, columns where created for other supported formats and filled in with the corresponding type or property in that format. The amount of mappings were counted as a percentage of the total possible mappings, i.e. the total amount of types or properties, available in CSL.
+Coverage of types and properties was determined by creating two spreadsheets, one with all of the CSL types and one with all of the CSL variables. Then, columns where created for other supported formats and filled in with the corresponding type or property in that format. The amount of mappings were counted as a percentage of the total possible mappings, i.e. the total amount of types or properties, available in CSL.
 
-This skews the perspective as not all properties and types can plausibly be mapped, either because no equivalent term exists in the other format, or because the existence is currently unknown to the authors. This is explained more concretely in the results.
+This method of counting skews the perspective as not all properties and types can plausibly be mapped, either because no equivalent term exists in the other format, or because the existence is currently unknown to the authors. This is explained in more details in the results.
 
 \subsubsection*{Impact}
 
-To collect dependent projects, the GitHub Dependency Networks was used, which lists other GitHub repositories using Citation.js (to some capacity). To search for dependent repositories on different hosting platforms, a search on the respective hosting platforms and Google was carried out. Additionally, a number of projects previously known to the authors were listed.
+To collect dependent projects, the GitHub Dependency Networks was used, which lists other GitHub repositories listing Citation.js as a dependency. To find dependent repositories on different hosting platforms, a search on the respective hosting platforms and Google was carried out. Additionally, projects known to the authors to use the library were listed. Of those lists, a diverse set of projects was extracted by hand, followed by a check to see if and how Citation.js is used.
 
-Of those lists, a diverse set of projects was extracted by hand, followed by a check to see if and how Citation.js is used. All projects listed are, as a consequence, open source.
-
-For download counts, npm-stat.com was chosen because of its ability to collect download statistics over specific, multi-year time frames.
+For download counts, \url{npm-stat.com} was chosen because of its ability to collect download statistics over specific, multi-year time frames.
 
 \subsubsection*{Performance}
 
-Performance statistics were gathered by recording runtime performance in the Chrome DevTools and the Firefox Developer Tools while importing Citation.js in the browser. The results were obtained with the default settings for each of the platforms. In Chrome, this was achieved by using \emph{guest mode}, while Node and Firefox were not configured to begin with.
+Performance statistics were gathered by recording runtime performance in the Chrome DevTools and the Firefox Developer Tools while importing Citation.js in the browser. The results were obtained with the default settings for each of the platforms. In Chrome, this was achieved by using \emph{guest mode}, while no custom settings were used for Firefox and Node was used without command-line options affecting performance.
 
 The sizes of the different components was determined with the disc tool \citep{Kennedy2019hughsk}.
 
@@ -288,7 +286,7 @@ The sizes of the different components was determined with the disc tool \citep{K
 
 A important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is often unnecessarily much work, CSL-JSON was chosen as a central format. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
 
-While the numbers may seem low, note that not every CSL-JSON property can be mapped: the intentions behind at least three properties are contested \citep{wiernik_inconsistencies_2018}, the values of three other properties can usually be derived from other fields, ten properties are specific to citations and may not apply to resource-describing schemas, and sixteen properties could be reduced to just a few with linked data. Additionally, a number of properties have limited documentation and usage, making it difficult to determine what the exact meaning is.
+While the numbers may seem low, note that not every CSL-JSON property can be mapped: the intentions behind at least three properties are contested \citep{wiernik_inconsistencies_2018}, the values of two other properties can usually be derived from other fields, ten properties are specific to citations and may not apply to resource-describing schemas, and twenty properties could be reduced to just eight with linked data. Additionally, a number of properties have limited documentation and usage, making it difficult to determine what the exact meaning is.
 
 On top of that, the other formats may not have enough well-defined properties to map either. The BibTeX and BibJSON mappings, the latter being based on BibTeX, are limited by the low number of known properties and types. Without an authoritative list of properties, examples from a range of sources were used to define a mapping, which consequently lacked lesser-used properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. In fact, a recent Citation.js update nearly doubled the number of mapped properties to 46 (59\%). At that point, the CSL specification becomes a limiting again.
 
@@ -300,7 +298,7 @@ The number of mapped RIS properties is actually higher than expected; the RIS ma
 \begin{tabular}{l|r|r|r|r|r|r|}
 \cline{2-7}
                                           & \multicolumn{1}{l|}{\textbf{CSL-JSON}} & \multicolumn{1}{l|}{\textbf{Wikidata}} & \multicolumn{1}{l|}{\textbf{Wikidata (\textgreater{}0.4.4)}} & \multicolumn{1}{l|}{\textbf{BibTeX}} & \multicolumn{1}{l|}{\textbf{RIS}} & \multicolumn{1}{l|}{\textbf{BibJSON}} \\ \hline
-\multicolumn{1}{|l|}{\textbf{Properties}} & 78                                     & 24 (31\%)                              & 46 (59\%)                                                    & 21 (27\%)                            & 41 (53\%)                         & 20 (27\%)                             \\ \hline
+\multicolumn{1}{|l|}{\textbf{Properties}} & 78                                     & 24 (31\%)                              & 46 (59\%)                                                    & 21 (27\%)                            & 42 (54\%)                         & 20 (27\%)                             \\ \hline
 \multicolumn{1}{|l|}{\textbf{Types}}      & 35                                     & 31 (89\%)                              & 31 (89\%)                                                    & 11 (31\%)                            & 30 (86\%)                         & 11 (31\%)                             \\ \hline
 \end{tabular}
 \end{table}
