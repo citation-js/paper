@@ -146,26 +146,26 @@ For configuring plugins there is also a \texttt{config} option. As an example a 
 let Cite = require('citation-js')
 
 Cite.plugins.add('bibtex', {
-input: {
-'@bibtex/text': {
-  parseType: { ... },
-  parse (text) { ... }
-},
-'@bibtex/object': {
-  parseType: { ... },
-  parse (text) { ... }
-}
-},
+  input: {
+    '@bibtex/text': {
+      parseType: { ... },
+      parse (text) { ... }
+    },
+    '@bibtex/object': {
+      parseType: { ... },
+      parse (text) { ... }
+    }
+  },
 
-output: {
-bibtex (data, options) {
-  ...
-}
-},
+  output: {
+    bibtex (data, options) {
+      ...
+    }
+  },
 
-config: {
-labelForm: ['author', 'title', 'issued']
-}
+  config: {
+    labelForm: ['author', 'title', 'issued']
+  }
 })
 
 let bibtexConfig = Cite.plugins.config.get('bibtex')
@@ -213,30 +213,30 @@ Figure \ref{code:use} shows an example of another use case. For example, the bas
 \begin{small}
 \begin{minted}[linenos,breaklines,fontsize=\scriptsize]{html}
 <html>
-<head>
-<!-- Altmetric widget code --> <script src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/citation-js"></script>
-</head>
-<body>
-<div id="element"></div>
-<script>
-window.onload = async function () {
-  let Cite = require('citation-js')
-  let cite = await Cite.async('10.1371/journal.pone.0185809')
+  <head>
+    <!-- Altmetric widget code --> <script src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/citation-js"></script>
+  </head>
+  <body>
+    <div id="element"></div>
+    <script>
+      window.onload = async function () {
+        let Cite = require('citation-js')
+        let cite = await Cite.async('10.1371/journal.pone.0185809')
   
-  let bibliography = cite.format('bibliography', {
-    format: 'html',
-    append ({DOI}) {
-      return ` <span class="altmetric-embed" data-badge-type="badge" data-doi="${DOI}"></span>`
-    }
-  })
+        let bibliography = cite.format('bibliography', {
+          format: 'html',
+          append ({DOI}) {
+            return ` <span class="altmetric-embed" data-badge-type="badge" data-doi="${DOI}"></span>`
+          }
+        })
 
-  let element = document.getElementById('element')
-  element.innerHTML = bibliography
-  _altmetric_embed_init()
-}
-</script>
-</body>
+        let element = document.getElementById('element')
+        element.innerHTML = bibliography
+        _altmetric_embed_init()
+      }
+    </script>
+  </body>
 </html>
 \end{minted}
 \end{small}
