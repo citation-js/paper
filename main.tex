@@ -22,7 +22,7 @@
 \title{Citation.js: a Format-independent, Modular Bibliography Tool for the Browser and Command Line}
 
 \author[1]{Lars G. Willighagen}
-\affil[1]{Eindhoven, The Netherlands}
+\affil[1]{Independent researcher, Eindhoven, The Netherlands}
 \corrauthor[1]{Lars G. Willighagen}{lars.willighagen@gmail.com}
 
 \begin{abstract}
@@ -42,7 +42,7 @@ The program follows modern guidelines for software in general and JavaScript in 
 
 \section*{Introduction}
 
-With the primary goal of scholarly publishing being the distribution of knowledge, it is important that the publications --- and the literature they cite --- are distributed in an accessible, identifiable and findable manner \citep{shotton_publishing:_2013}. While traditionally journals required text-based citations, each formatted in their own specific style, the last few decades the use of Persistent IDentifiers (PIDs) has become commonplace, with Digital Object Identifiers (DOIs) being the most common for scholarly articles, and International Standard Book Numbers (ISBNs) for books. These PIDs are then linked to central stores that provide machine-readable bibliographic information, such as Crossref and DataCite \cite{lammey_crossref_2015,brase_datacite_2009,neumann_datacite_2014}.
+All research extends or uses knowledge from other research. With the primary goal of scholarly publishing being the distribution of knowledge, it is important that the publications --- and the literature they cite --- are distributed in an accessible, identifiable and findable manner \citep{shotton_publishing:_2013}. That also allows the analysis and visualisation of how research cites each other \citep{shotton_publishing:_2013,van_eck_citnetexplorer:_2014}. While traditionally journals required text-based citations, each formatted in their own specific style, the last few decades the use of Persistent IDentifiers (PIDs) has become commonplace, with Digital Object Identifiers (DOIs) being the most common for scholarly articles, and International Standard Book Numbers (ISBNs) for books. These PIDs are then linked to central stores that provide machine-readable bibliographic information, such as Crossref and DataCite \cite{lammey_crossref_2015,brase_datacite_2009,neumann_datacite_2014}.
 
 Since most kinds of PIDs are intended for certain kinds of publication, be it data sets, journal articles, books or code repositories, the bibliographic information is stored in a format intended for that kind of publication. As a result, there are many different stores and many different formats: Libraries use Machine-Readable Cataloging (MARC) \citep{avram_machine-readable_nodate} and similar formats, Wikidata \citep{vrandecic_getting_2018} and WikiCite \citep{taraborelli_wikicite_2017} have their own scheme; DataCite has DataCite eXtensible Markup Language (XML) and JavaScript Object Notation (JSON) \citep{noauthor_datacite_2017}; and Crossref has Crossref UNIXREF \citep{noauthor_unixref_nodate}. Similarly, most reference managers have their own formats too: Zotero and EndNote have their own schemes \citep{vinckevicius_zotero_2017,noauthor_endnote_nodate}, and Office Word has an XML namespace \citep{noauthor_documentformat.openxml.bibliography_nodate}. On top of that there are a lot of old and new formats created for a variety of reasons, like BibTeX \citep{patashnik_bibtexing_1988}, Citation Style Language (CSL) \citep{zelle_csl_2012}, Research Information Systems (RIS) \citep{noauthor_ris_2012}, and the Bibliographic Ontology (BIBO) \citep{d2009bibliographic}.
 
@@ -146,26 +146,26 @@ For configuring plugins there is also a \texttt{config} option. As an example a 
 let Cite = require('citation-js')
 
 Cite.plugins.add('bibtex', {
-  input: {
-    '@bibtex/text': {
-      parseType: { ... },
-      parse (text) { ... }
-    },
-    '@bibtex/object': {
-      parseType: { ... },
-      parse (text) { ... }
-    }
-  },
+input: {
+'@bibtex/text': {
+  parseType: { ... },
+  parse (text) { ... }
+},
+'@bibtex/object': {
+  parseType: { ... },
+  parse (text) { ... }
+}
+},
 
-  output: {
-    bibtex (data, options) {
-      ...
-    }
-  },
+output: {
+bibtex (data, options) {
+  ...
+}
+},
 
-  config: {
-    labelForm: ['author', 'title', 'issued']
-  }
+config: {
+labelForm: ['author', 'title', 'issued']
+}
 })
 
 let bibtexConfig = Cite.plugins.config.get('bibtex')
@@ -214,28 +214,28 @@ Figure \ref{code:use} shows an example of another use case. For example, the bas
 \begin{minted}[linenos,breaklines,fontsize=\scriptsize]{html}
 <html>
 <head>
-  <!-- Altmetric widget code --> <script src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/citation-js"></script>
+<!-- Altmetric widget code --> <script src="https://d1bxh8uas1mnw7.cloudfront.net/assets/embed.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/citation-js"></script>
 </head>
 <body>
-  <div id="element"></div>
-  <script>
-    window.onload = async function () {
-      let Cite = require('citation-js')
-      let cite = await Cite.async('10.1371/journal.pone.0185809')
-      
-      let bibliography = cite.format('bibliography', {
-        format: 'html',
-        append ({DOI}) {
-          return ` <span class="altmetric-embed" data-badge-type="badge" data-doi="${DOI}"></span>`
-        }
-      })
-    
-      let element = document.getElementById('element')
-      element.innerHTML = bibliography
-      _altmetric_embed_init()
+<div id="element"></div>
+<script>
+window.onload = async function () {
+  let Cite = require('citation-js')
+  let cite = await Cite.async('10.1371/journal.pone.0185809')
+  
+  let bibliography = cite.format('bibliography', {
+    format: 'html',
+    append ({DOI}) {
+      return ` <span class="altmetric-embed" data-badge-type="badge" data-doi="${DOI}"></span>`
     }
-  </script>
+  })
+
+  let element = document.getElementById('element')
+  element.innerHTML = bibliography
+  _altmetric_embed_init()
+}
+</script>
 </body>
 </html>
 \end{minted}
@@ -307,7 +307,7 @@ The number of mapped RIS properties is actually higher than expected; the RIS ma
 \label{table:completeness}
 \begin{tabular}{l|r|r|r|r|r|r|}
 \cline{2-7}
-                                          & \multicolumn{1}{l|}{\textbf{CSL-JSON}} & \multicolumn{1}{l|}{\textbf{Wikidata}} & \multicolumn{1}{l|}{\textbf{Wikidata (\textgreater{}0.4.4)}} & \multicolumn{1}{l|}{\textbf{BibTeX}} & \multicolumn{1}{l|}{\textbf{RIS}} & \multicolumn{1}{l|}{\textbf{BibJSON}} \\ \hline
+                                      & \multicolumn{1}{l|}{\textbf{CSL-JSON}} & \multicolumn{1}{l|}{\textbf{Wikidata}} & \multicolumn{1}{l|}{\textbf{Wikidata (\textgreater{}0.4.4)}} & \multicolumn{1}{l|}{\textbf{BibTeX}} & \multicolumn{1}{l|}{\textbf{RIS}} & \multicolumn{1}{l|}{\textbf{BibJSON}} \\ \hline
 \multicolumn{1}{|l|}{\textbf{Properties}} & 78                                     & 24 (31\%)                              & 46 (59\%)                                                    & 21 (27\%)                            & 42 (54\%)                         & 20 (27\%)                             \\ \hline
 \multicolumn{1}{|l|}{\textbf{Types}}      & 35                                     & 31 (89\%)                              & 31 (89\%)                                                    & 11 (31\%)                            & 30 (86\%)                         & 11 (31\%)                             \\ \hline
 \end{tabular}
@@ -369,17 +369,17 @@ While code execution is one part, one should also look into the file size. This 
 \multicolumn{2}{|c|}{\multirow{2}{*}{\textbf{Part}}} & \multicolumn{3}{c|}{\textbf{Size}}                                                                                   & \multicolumn{1}{c|}{\multirow{2}{*}{\textbf{Running time}}} \\ \cline{3-5}
 \multicolumn{2}{|c|}{}                               & \multicolumn{1}{c|}{\textbf{Own}} & \multicolumn{1}{c|}{\textbf{Dependencies}} & \multicolumn{1}{c|}{\textbf{Total}} & \multicolumn{1}{c|}{}                                       \\ \hline
 \multirow{10}{*}{Citation.js}    & Backport          & 5.9 kB                            & -                                          & 5.9 kB                              & 5.9 ms                                                      \\ \cline{2-6} 
-                                 & core              & 99.7 kB                           & 33.9 kB                                    & 133.5 kB                            & 8.3 ms                                                      \\ \cline{2-6} 
-                                 & plugin-bibjson    & 7.6 kB                            & -                                          & 7.6 kB                              & 3.5 ms                                                      \\ \cline{2-6} 
-                                 & plugin-bibtex     & 42.9 kB                           & -                                          & 42.9 kB                             & 2.6 ms                                                      \\ \cline{2-6} 
-                                 & plugin-csl        & 87.0 kB                           & 461.8 kB                                   & 548.9 kB                            & 3.2 ms                                                      \\ \cline{2-6} 
-                                 & plugin-doi        & 6.6 kB                            & -                                          & 6.6 kB                              & 0.6 ms                                                      \\ \cline{2-6} 
-                                 & plugin-ris        & 11.1 kB                           & -                                          & 11.1 kB                             & 0.5 ms                                                      \\ \cline{2-6} 
-                                 & plugin-wikidata   & 22.1 kB                           & 40.4 kB                                    & 62.4 kB                             & 2.2 ms                                                      \\ \cline{2-6} 
-                                 & name              & 16.6 kB                           & -                                          & 16.6 kB                             & 1.1 ms                                                      \\ \cline{2-6} 
-                                 & date              & 7.3 kB                            & -                                          & 7.3 kB                              & 0.2 ms                                                      \\ \hline
+                             & core              & 99.7 kB                           & 33.9 kB                                    & 133.5 kB                            & 8.3 ms                                                      \\ \cline{2-6} 
+                             & plugin-bibjson    & 7.6 kB                            & -                                          & 7.6 kB                              & 3.5 ms                                                      \\ \cline{2-6} 
+                             & plugin-bibtex     & 42.9 kB                           & -                                          & 42.9 kB                             & 2.6 ms                                                      \\ \cline{2-6} 
+                             & plugin-csl        & 87.0 kB                           & 461.8 kB                                   & 548.9 kB                            & 3.2 ms                                                      \\ \cline{2-6} 
+                             & plugin-doi        & 6.6 kB                            & -                                          & 6.6 kB                              & 0.6 ms                                                      \\ \cline{2-6} 
+                             & plugin-ris        & 11.1 kB                           & -                                          & 11.1 kB                             & 0.5 ms                                                      \\ \cline{2-6} 
+                             & plugin-wikidata   & 22.1 kB                           & 40.4 kB                                    & 62.4 kB                             & 2.2 ms                                                      \\ \cline{2-6} 
+                             & name              & 16.6 kB                           & -                                          & 16.6 kB                             & 1.1 ms                                                      \\ \cline{2-6} 
+                             & date              & 7.3 kB                            & -                                          & 7.3 kB                              & 0.2 ms                                                      \\ \hline
 \multirow{2}{*}{Additional}      & @babel/polyfill   & -                                 & 197.3 kB                                   & 197.3 kB                            & 32.0 ms                                                     \\ \cline{2-6} 
-                                 & browserify        & -                                 & 6.8 kB                                     & 6.8 kB                              & 0.2 ms                                                      \\ \hline
+                             & browserify        & -                                 & 6.8 kB                                     & 6.8 kB                              & 0.2 ms                                                      \\ \hline
 \multicolumn{2}{|l|}{Total}                          & 306.8 kB                          & 740.1 kB                                   & 1046.8 kB                           & 60.3 ms                                                     \\ \hline
 \end{tabular}
 \end{table}
