@@ -300,7 +300,7 @@ While the numbers may seem low, note that not every CSL-JSON property can be map
 
 On top of that, the other formats may not have enough well-defined properties to map either. The BibTeX and BibJSON mappings, the latter being based on BibTeX, are limited by the low number of known properties and types. Without an authoritative list of properties, examples from a range of sources were used to define a mapping, which consequently lacked lesser-used properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. In fact, a recent Citation.js update nearly doubled the number of mapped properties to 46 (59\%). At that point, the CSL specification becomes a limiting again.
 
-The number of mapped RIS properties is actually higher than expected; the RIS mapping has a lot of one-to-many and many-to-one mappings, which makes it inconsistent and unreliable, while artificially raising the number of mapped properties. Since there is no authoritative document other than Wikipedia, the mapping is partially based on the Zotero translator for RIS.
+The number of mapped RIS properties is actually higher than expected; the RIS mapping has a lot of one-to-many and many-to-one mappings, which makes it inconsistent while artificially raising the number of mapped properties. Since there is no authoritative document other than an Internet-Archived spreadsheet linked to on Wikipedia \citep{noauthor_ris_2012}, the current mapping is partially based on the Zotero translator for RIS.
 
 \begin{table}[bt]
 \caption{\textbf{Mapping statistics.} The number of CSL-JSON properties and types mapped to different formats. See Table S1. }
@@ -313,7 +313,7 @@ The number of mapped RIS properties is actually higher than expected; the RIS ma
 \end{tabular}
 \end{table}
 
-Apart from property and type mappings, value conversion affect the accuracy of results as well. For example, since neither BibTeX nor RIS encode information about how names are built up, such information has to be estimated. While this is seems to be going fine for Western names, other naming systems may not work as well. Note however, that Zotero, which uses CSL, is not particularly geared towards any naming schemes other than the most simple, as noted by 
+Apart from property and type mappings, value conversion affect the accuracy of results as well. For example, since BibTeX does not encode information about how names are built up, such information has to be estimated. While this is seems to be going fine for Western names, other naming systems may not work as well. The same goes for how RIS encodes names: a first name, a last name and an optional suffix. Note however, that Zotero, which uses CSL, is not particularly geared towards any naming schemes other than the most simple, as noted by 
 \cite{darcus_non-western_2008}. Also, style guides themselves may not have rules for non-Western names either \citep{qiu_scientific_2008,puniamoorthy_give_2008}.
 
 \subsection*{Impact}
