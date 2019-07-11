@@ -77,6 +77,12 @@ The impact of citation managers should also not be underestimated. However, most
 
 \section*{Approach}
 
+As mentioned, Citation.js converts different bibliographical formats into each other. To achieve interoperability without too much work, a central format is chosen. All input is converted into this central format, and all output is created from it. This is similar to the 'long translation path' with the 'interoperable core' as defined by \cite{godby_two_2003}.
+
+Input is parsed iteratively: for each distinct format along the way from the input to the central format, a separate parser function is defined. This allow progressive enhancement, easily replacing parts of the parsing process without touching the rest, and lets users input intermediate formats without second thought.
+
+Parsing iteratively is relatively simple, because all different kinds of input should get turned into a single type anyway: you do not have to choose what format you need next, you only have to recognize and parse what you have now. However, a similar process for output does not make as much sense. With output formatting, there is only one kind of input, the central format, and several kinds of output. If output formatting should be done iteratively as well, the paths to reach final output formats would have to be defined separately.
+
 \subsection*{Software Development}
 
 The software was developed using modern standards: version control with Git, semantic versioning for releases~\citep{preston-werner_semantic_2013}, open source archives on GitHub (\url{https://github.com/larsgw/citation.js}; \url{https://github.com/citation-js}) and Zenodo (\url{https://doi.org/10.5281/zenodo.1005176}), browser bundles with browserify \citep{Halliday2018browserify/browserify}, compatible code with Babel \citep{Zhu2018babel/babel}, integration testing using the Travis-CI service~\citep{noauthor_travis_2018}, code linting (source code analysis) with ESLint~\citep{Zakas2018eslint/eslint} and Standard~\citep{Aboukhadijeh2018standard/standard}, checking \texttt{RegExp}'s for ReDOS vulnerabilities with \texttt{vuln-regex-detector}~\citep{davis_impact_2018}, and detailed documentation with JSDoc~\citep{Williams2018jsdoc3/jsdoc}.
@@ -266,7 +272,7 @@ The Citation.js npm package can also be used as a library to create integrations
 
 Coverage of types and properties was determined by creating two spreadsheets, one with all of the CSL types and one with all of the CSL variables. Then, columns where created for other supported formats and filled in with the corresponding type or property in that format. The amount of mappings were counted as a percentage of the total possible mappings, i.e. the total amount of types or properties, available in CSL.
 
-This method of counting skews the perspective as not all properties and types can plausibly be mapped, either because no equivalent term exists in the other format, or because the existence is currently unknown to the authors. This is explained in more details in the results.
+This method of counting skews the perspective as not all properties and types can plausibly be mapped, either because no equivalent term exists in the other format, or because the existence is currently unknown to the authors. This is explained in more detail in the results.
 
 \subsubsection*{Impact}
 
