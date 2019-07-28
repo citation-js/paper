@@ -48,7 +48,7 @@ Since most kinds of PIDs are intended for certain kinds of publication, be it da
 
 This leads to reduced findability between organisations and disciplines \citep{godby_repository_2004,zinn_crosswalking_2016}, and reference managers need to maintain parsers for numerous formats and different types of citable resources (articles, books, data, software \citep{smith_software_2016}, etc). The management requires a detailed description of the source being referenced and preferably link to the full-text too \citep{hull_defrosting_2008}. A second requirement is their ability to convert references into citations, according to the norms for formatting citations in writing \citep{ron_gilmour_reference_2011}. Reference managers assist in keeping references accessible and machine-readable, ready to be formatted for use in citation \citep{fenner_reference_2014}.
 
-Existing managers, like Zotero, either require a client desktop program or a server, or have entirely proprietary backends. This paper introduces Citation.js, a standalone JavaScript library capable of running in the browser, on a server and as a CLI. It consists of a set of parsers and formatters (see Figure \ref{fig:structure}) that together allow for the conversion of different metadata formats via a central format, CSL-JSON \citep{Bennett2018Juris-M/citeproc-js}. To better suit individual needs, and to minimize unnecessary code which is especially important in the browser, Citation.js is fully modularised. Formats are bundled in thematic plugins, which can be installed separately. For formatted bibliographies and citations, CSL templates and locales are used with citeproc-js \citep{zelle_csl_2012,Bennett2018Juris-M/citeproc-js}. This paper describes how Citation.js is developed, documented, tested, and released.
+Existing managers, like Zotero, either require a client desktop program or a server, or have entirely proprietary backends. This paper introduces Citation.js, a standalone JavaScript library capable of running in the browser, on a server and as a CLI. It consists of a set of parsers and formatters (see Figure \ref{fig:structure}) that together allow for the conversion of different metadata formats via a central format, CSL-JSON \citep{Bennett2018Juris-M/citeproc-js}. To better suit individual needs, and to minimize unnecessary code which is especially important in the browser, Citation.js is fully modularised. Formats are bundled in thematic plugins, which can be installed separately. For formatted bibliographies and citations, CSL styles and locales are used with citeproc-js \citep{zelle_csl_2012,Bennett2018Juris-M/citeproc-js}. This paper describes how Citation.js is developed, documented, tested, and released.
 
 \begin{figure}[bt]
 \centering
@@ -131,7 +131,7 @@ Types can then provide a list of predicates, testing if input belongs to that fo
 
 \subsubsection*{Output formatting}
 
-Output formatting is less complicated. Users and developers only have to provide the identifier of the formatter. Further customization can then be done by providing options, which are automatically forwarded to the formatter. This allows the CSL plugin to take in options specifying the template and locale, for example. All formatting producing bibliographies and citations is done with \texttt{citeproc-js} \citep{Bennett2018Juris-M/citeproc-js}.
+Output formatting is less complicated. Users and developers only have to provide the identifier of the formatter. Further customization can then be done by providing options, which are automatically forwarded to the formatter. This allows the CSL plugin to take in options specifying the style and locale, for example. All formatting producing bibliographies and citations is done with \texttt{citeproc-js} \citep{Bennett2018Juris-M/citeproc-js}.
 
 \subsubsection*{Plugin system}
 
@@ -359,7 +359,7 @@ Actual timings may vary depending on the device, operating system and cache. Not
 \label{fig:perf}
 \end{figure}
 
-While code execution is one part, one should also look into the file size. This is especially important in the browser, which has to fetch the library when loading the page. The biggest part is \texttt{citeproc-js}, accounting for almost half of the file size. Additionally, built-in CSL templates and locales should also be counted. A complete overview can be found in Table \ref{table:size}.
+While code execution is one part, one should also look into the file size. This is especially important in the browser, which has to fetch the library when loading the page. The biggest part is \texttt{citeproc-js}, accounting for almost half of the file size. Additionally, built-in CSL styles and locales should also be counted. A complete overview can be found in Table \ref{table:size}.
 
 \begin{table}[bt!]
 \caption{\textbf{Browser bundle breakdown.} Running time is the time it takes to import that part of the script with browserify \texttt{require} in the Chrome data set. Note that a big part of the \texttt{plugin-csl} "own" code is serialized styles and locales from the CSL repository, and its dependencies consist of \texttt{citeproc-js}. Minified the code is 702 kB, which is reduced to 177 kB with gzip and 164 kB with Brotli, both with default compression levels.}
@@ -427,7 +427,7 @@ Apart from the formats currently supported in Citation.js (see Table~\ref{table:
 
 \section*{Conclusions}
 
-Citation.js has been introduced as a library that supports bibliographic information in various formats, from multiple sources. The use of JavaScript ensures it can be used in a wide variety of use cases in the web browser, on the command line, and in a server environment. The tool is developed using modern approaches and released via the npm network and archived on GitHub and Zenodo. In addition to machine-readable formats such as BibTeX and RIS, the support for CSL templates ensures that citations and bibliographies can be formatted in many textual representations. Additional content can be easily added to those representations, such as Altmetric icons. The support for plugins allows additional formats to be integrated with relative ease, and without the need of a central repository managing those plugins.
+Citation.js has been introduced as a library that supports bibliographic information in various formats, from multiple sources. The use of JavaScript ensures it can be used in a wide variety of use cases in the web browser, on the command line, and in a server environment. The tool is developed using modern approaches and released via the npm network and archived on GitHub and Zenodo. In addition to machine-readable formats such as BibTeX and RIS, the support for CSL styles ensures that citations and bibliographies can be formatted in many textual representations. Additional content can be easily added to those representations, such as Altmetric icons. The support for plugins allows additional formats to be integrated with relative ease, and without the need of a central repository managing those plugins.
 
 \section*{Acknowledgments}
 
