@@ -101,8 +101,8 @@ Apart from tools used for development, Citation.js also uses a number of runtime
 \item[\texttt{@babel/polyfill}]
 is a runtime library which fills in support for modern APIs on older platforms. It comes with the use of Babel to transform modern syntax for older platforms \citep{Zhu2018babel/babel}.
 
-\item[\texttt{citeproc}]
-is the official CSL formatting library in JavaScript \citep{Bennett2018Juris-M/citeproc-js,noauthor_csl_nodate}.
+\item[\texttt{citeproc-js}]
+is a widely used CSL formatting library, written in JavaScript \citep{Bennett2018Juris-M/citeproc-js,noauthor_csl_nodate}.
 
 \item[\texttt{commander}]
 is a utility library, only used for the Command Line Interface (CLI). It parses the command line arguments and generates documentation \citep{Holowaychuk2018tj/commander.js}.
@@ -135,7 +135,7 @@ Output formatting is less complicated. Users and developers only have to provide
 
 \subsubsection*{Plugin system}
 
-Apart from being able to add input and output formats and schemes on their own, it is also possible to add them in a thematically linked plugin. For example, a BibTeX plugin might consist of a parser for \texttt{.bib} files, a parser for the resulting BibTeX-schemed JSON, and a output formatter to create BibTeX from other sources as well. This plugin could then be combined with, for example, a Bib.TXT plugin, resulting in a JavaScript package or module, which could be published in package managers like npm. Code for this plugin would look like Fig. \ref{code:plugin}.
+Apart from being able to add input and output formats and schemes on their own, it is also possible to add them in a thematically linked plugin. For example, a BibTeX plugin might consist of a parser for \texttt{.bib} files, a parser for the resulting BibTeX-schemed JSON, and an output formatter to create BibTeX from other sources as well. This plugin could then be combined with, for example, a Bib.TXT plugin, resulting in a JavaScript package or module, which could be published in package managers like npm. Code for this plugin would look like Fig. \ref{code:plugin}.
 
 For configuring plugins there is also a \texttt{config} option. As an example a \texttt{labelForm} option is added, which could control the way the BibTeX output formatter generates labels. Users of this plugin can then retrieve and modify this configuration. It is also possible to offer internal functions this way, for more fine-grained control.
 
@@ -204,7 +204,7 @@ Output          & \textbf{}        & x               & x                & x     
 
 For in-browser use, there is also a standalone JavaScript file available. This includes dependencies. This bundle is built automatically when publishing, and is available through a number of Content Delivery Networks (CDNs) that automatically distribute npm packages. The \texttt{Cite} class can then be imported and used just as the npm package, barring browser limitations.
 
-For simple use cases like inserting static bibliographies, a separate tool, \texttt{citation.js-replacer}, was developed. When included on a page, this replaces every HyperText Markup Language (HTML) element matching a certain selector, with a bibliography.
+For simple use cases like inserting static bibliographies, a separate tool, \texttt{citation.js-replacer}, was developed. When included on a page, this replaces every HyperText Markup Language (HTML) element matching a certain selector with a bibliography.
 
 Figure \ref{code:use} shows an example of another use case. For example, the basic use can be extended to add additional information to citations, such as an Altmetric \citep{adie_altmetric:_2013} score icon or Dimensions citation count \citep{thelwall_dimensions:_2018}. The output is shown in Figure \ref{fig:use}.
 
@@ -241,7 +241,7 @@ Figure \ref{code:use} shows an example of another use case. For example, the bas
 \end{minted}
 \end{small}
 \caption{\textbf{Basic use, including appending data to formatted bibliography entries.}
-Here, line 3 loads the Altmetric widget code, line 4 loads the library, line 10 imports \texttt{Cite}, and line 11 creates an interface for a bibliography with one entry, with metadata from a DOI. Lines 13-18 render the bibliography, with line 14 setting the output to HTML and lines 15-17 appending an Altmetric widget to the entry. Lines 20-21 show the output on the page. Lines 9 and 22 are to avoid race conditions in DOM access. Line 3 and 22 initialize the Altmetric badge. In the example, \citep{hallmann_more_2017} is used.
+Here, line 3 loads the Altmetric widget code, line 4 loads the library, line 10 imports \texttt{Cite}, and line 11 creates an interface for a bibliography with one entry, with metadata from a DOI. Lines 13-18 render the bibliography, with line 14 setting the output to HTML and lines 15-17 appending an Altmetric widget to the entry. Lines 20-21 show the output on the page. Lines 9 and 22 are to avoid race conditions in DOM access. Lines 3 and 22 initialize the Altmetric badge. In the example, \citep{hallmann_more_2017} is used.
 }
 \label{code:use}
 \end{figure}
@@ -294,11 +294,11 @@ The sizes of the different components was determined with the disc tool \citep{K
 
 \subsection*{Coverage}
 
-A important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each formats is often unnecessarily much work, CSL-JSON was chosen as a central format. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
+A important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each format is often unnecessarily much work, CSL-JSON was chosen as a central format. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
 
 While the numbers may seem low, note that not every CSL-JSON property can be mapped: the intentions behind at least three properties are contested \citep{wiernik_inconsistencies_2018}, the values of two other properties can usually be derived from other fields, ten properties are specific to references and may not apply to resource-describing schemas, and twenty properties could be reduced to just eight with linked data. Additionally, a number of properties have limited documentation and usage, making it difficult to determine what the exact meaning is.
 
-On top of that, the other formats may not have enough well-defined properties to map either. The BibTeX and BibJSON mappings, the latter being based on BibTeX, are limited by the low number of known properties and types. Without an authoritative list of properties, examples from a range of sources were used to define a mapping, which consequently lacked lesser-used properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. In fact, a recent Citation.js update nearly doubled the number of mapped properties to 46 (59\%). At that point, the CSL specification becomes a limiting again.
+On top of that, the other formats may not have enough well-defined properties to map either. The BibTeX and BibJSON mappings, the latter being based on BibTeX, are limited by the low number of known properties and types. Without an authoritative list of properties, examples from a range of sources were used to define a mapping, which consequently lacked lesser-used properties. The Wikidata mapping has the most potential for expansion due to the large number of described properties. In fact, a recent Citation.js update nearly doubled the number of mapped properties to 46 (59\%). At that point, the CSL specification becomes limiting again.
 
 The number of mapped RIS properties is actually higher than expected; the RIS mapping has a lot of one-to-many and many-to-one mappings, which makes it inconsistent while artificially raising the number of mapped properties. Since there is no authoritative document other than an Internet-Archived spreadsheet linked to on Wikipedia \citep{noauthor_ris_2012}, the current mapping is partially based on the Zotero translator for RIS.
 
@@ -318,7 +318,7 @@ Apart from property and type mappings, value conversion affect the accuracy of r
 
 \subsection*{Impact}
 
-Since Citation.js was published as an npm module, it has been used independently of the authors in a variety of use cases. With the GitHub Dependency graph, Google and via Twitter a number of those uses can be identified, listed in Table \ref{table:uses}. The download count is also increasing, as can be seen in Figure \ref{fig:downloads}. Between the first version in October 2016, and the 26 April 2019, our package was downloaded a total of 26,718 times.
+Since Citation.js was published as an npm module, it has been used independently of the authors in a variety of use cases. With the GitHub Dependency graph, Google, and via Twitter, a number of those uses can be identified, listed in Table \ref{table:uses}. The download count is also increasing, as can be seen in Figure \ref{fig:downloads}. Between the first version in October 2016, and 26 April 2019, our package was downloaded a total of 26,718 times.
 
 \begin{table}[bt]
 \caption{\textbf{Different uses of Citation.js found in the wild.} Some of these projects contributed valuable feedback to the development of Citation.js.}
