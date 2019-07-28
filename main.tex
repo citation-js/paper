@@ -241,7 +241,7 @@ Figure \ref{code:use} shows an example of another use case. For example, the bas
 \end{minted}
 \end{small}
 \caption{\textbf{Basic use, including appending data to formatted bibliography entries.}
-Here, line 3 loads the Altmetric widget code, line 4 loads the library, line 10 imports \texttt{Cite}, and line 11 creates an interface for a bibliography with one entry, with metadata from a DOI. Lines 13-18 render the bibliography, with line 14 setting the output to HTML and lines 15-17 appending an Altmetric widget to the entry. Lines 20-21 show the output on the page. Lines 9 and 22 are to avoid race conditions in DOM access. Lines 3 and 22 initialize the Altmetric badge. In the example, \citep{hallmann_more_2017} is used.
+Here, line 3 loads the Altmetric widget code, line 4 loads the library, line 10 imports \texttt{Cite}, and line 11 creates an interface for a bibliography with one entry, with metadata from a DOI. Lines 13-18 render the bibliography, with line 14 setting the output to HTML and lines 15-17 appending an Altmetric widget to the entry. Lines 20-21 show the output on the page. Lines 9 and 23 are to avoid race conditions in DOM access. Lines 3 and 22 initialize the Altmetric badge. In the example, \citep{hallmann_more_2017} is used.
 }
 \label{code:use}
 \end{figure}
@@ -294,7 +294,7 @@ The sizes of the different components was determined with the disc tool \citep{K
 
 \subsection*{Coverage}
 
-A important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each format is often unnecessarily much work, CSL-JSON was chosen as a central format. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
+An important aspect of Citation.js, other than parsing and formatting specific syntaxes, is the mappings between different formats. Since creating mappings between each format is often unnecessarily much work, CSL-JSON was chosen as a central format. To review the existing mappings, the number of mapped properties and entry types relative to CSL-JSON were counted. Table \ref{table:completeness} shows those results.
 
 While the numbers may seem low, note that not every CSL-JSON property can be mapped: the intentions behind at least three properties are contested \citep{wiernik_inconsistencies_2018}, the values of two other properties can usually be derived from other fields, ten properties are specific to references and may not apply to resource-describing schemas, and twenty properties could be reduced to just eight with linked data. Additionally, a number of properties have limited documentation and usage, making it difficult to determine what the exact meaning is.
 
@@ -362,7 +362,7 @@ Actual timings may vary depending on the device, operating system and cache. Not
 While code execution is one part, one should also look into the file size. This is especially important in the browser, which has to fetch the library when loading the page. The biggest part is \texttt{citeproc-js}, accounting for almost half of the file size. Additionally, built-in CSL templates and locales should also be counted. A complete overview can be found in Table \ref{table:size}.
 
 \begin{table}[bt!]
-\caption{\textbf{Browser bundle breakdown.} Running time is the time it takes to import that part of the script with browserify \texttt{require} in the Chrome data set. Note that a big part of the \texttt{plugin-csl} "own" code is serialized styles and locales from the CSL repository. Minified the code is 702 kB, which is reduced to 177 kB with gzip and 164 kB with Brotli, both with default compression levels.}
+\caption{\textbf{Browser bundle breakdown.} Running time is the time it takes to import that part of the script with browserify \texttt{require} in the Chrome data set. Note that a big part of the \texttt{plugin-csl} "own" code is serialized styles and locales from the CSL repository, and its dependencies consist of \texttt{citeproc-js}. Minified the code is 702 kB, which is reduced to 177 kB with gzip and 164 kB with Brotli, both with default compression levels.}
 \label{table:size}
 \begin{tabular}{|l|l|r|r|r|r|}
 \hline
